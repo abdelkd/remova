@@ -1,5 +1,7 @@
 import Image from 'next/image';
+import Link from 'next/link';
 import { Camera, Wand2, ArrowRight, Image as ImageIcon } from "lucide-react";
+
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Carousel, CarouselContent, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
@@ -52,11 +54,11 @@ const HeroSection = () => {
               Get Started
               <ArrowRight className="ml-2 w-4 h-4" />
             </Button>
-            <a href="#examples">
+            <Link href="#examples">
               <Button size="lg" variant="outline" className="text-base font-semibold px-8">
                 View Examples
               </Button>
-            </a>
+            </Link>
           </div>
 
           <div className="flex items-center gap-4 pt-4">
@@ -155,11 +157,13 @@ const PricingSection = () => {
           </div>
 
           <div className="pt-4">
-            <Button
-              className="w-full text-white py-6 text-lg font-semibold"
-            >
-              Upgrade Now
-            </Button>
+            <Link href="/app">
+              <Button
+                className="w-full text-white py-6 text-lg font-semibold"
+              >
+                Upgrade Now
+              </Button>
+            </Link>
             <p className="text-center text-sm text-gray-500 mt-3">
               Start processing immediately after upgrade
             </p>
