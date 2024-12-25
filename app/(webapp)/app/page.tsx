@@ -1,5 +1,5 @@
 'use client';
-import React, { useRef, useState, Fragment } from 'react';
+import React, { useState, Fragment } from 'react';
 import Image from 'next/image';
 import {
   Upload,

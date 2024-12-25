@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { Camera, Wand2, ArrowRight, Image as ImageIcon } from "lucide-react";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -69,9 +70,11 @@ const HeroSection = () => {
         <div className="relative">
           <div className="aspect-square rounded-2xl bg-zinc-100 overflow-hidden">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_40%_40%,rgba(0,0,0,0)_0%,rgba(0,0,0,0.1)_100%)]" />
-            <img
+            <Image
               src="/api/placeholder/800/800"
               alt="Image Processing Demo"
+              width={800}
+              height={800}
               className="object-cover w-full h-full rounded-2xl"
             />
           </div>
@@ -170,8 +173,10 @@ const FeatureSection = () => {
         {/* Left Column - Image/Preview */}
         <div className="relative">
           <div className="aspect-square rounded-2xl bg-zinc-50 flex items-center justify-center">
-            <img
+            <Image
               src="/api/placeholder/600/600"
+              width={600}
+              height={600}
               alt="Background Removal Demo"
               className="rounded-xl"
             />
