@@ -3,7 +3,6 @@ import { Camera, Wand2, ArrowRight, Image as ImageIcon } from "lucide-react";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Carousel, CarouselContent, CarouselNext, CarouselPrevious } from '../components/ui/carousel';
-import ImageComparison from '../components/image-comparison';
 
 const HeroSection = () => {
   return (
@@ -254,10 +253,11 @@ const FeatureSection = () => {
 
 const ExamplesSection = () => {
   return (
-    <Carousel>
+    <Carousel className="max-w-6xl">
       <CarouselContent className="relative">
-        <ImageComparison afterImage='/khamsat.jpeg' beforeImage='/khamsat.jpeg' />
-        <ImageComparison afterImage='/khamsat.jpeg' beforeImage='/khamsat.jpeg' />
+        <Image src={khamsat} alt={"an example image"} />
+        <Image src={khamsat} alt={"an example image"} />
+        <Image src={khamsat} alt={"an example image"} />
       </CarouselContent>
       <CarouselPrevious />
       <CarouselNext />
