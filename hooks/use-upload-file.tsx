@@ -4,9 +4,6 @@ import { useRef, useState, ChangeEventHandler } from "react";
 import { fileToBase64 } from '@/lib/utils';
 
 export const useUploadFile = () => {
-  // uploadFile function
-  // file  state
-
   const [file, setFile] = useState<File | undefined>(undefined)
   const [base64String, setBase64String] = useState<string | null>(null);
   const inputFileRef = useRef<HTMLInputElement>(null)
@@ -18,8 +15,6 @@ export const useUploadFile = () => {
 
     const firstFile = files[0]
 
-    const reader = new FileReader();
-
     fileToBase64(firstFile).then((res) => {
       const extension = firstFile.name.split('.').at(-1)
       const result = `data:image/${extension};base64,${res}`
@@ -27,8 +22,6 @@ export const useUploadFile = () => {
       setFile(firstFile)
     })
 
-    window.__FILE = firstFile
-    window.__BASE = base64String
   }
 
   const uploadFile = () => {
