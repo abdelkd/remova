@@ -2,7 +2,9 @@ import Image from 'next/image';
 import { Camera, Wand2, ArrowRight, Image as ImageIcon } from "lucide-react";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Carousel, CarouselContent, CarouselNext, CarouselPrevious } from '../components/ui/carousel';
+import { Carousel, CarouselContent, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
+
+import khamsat from '@/assets/khamsat.jpeg';
 
 const HeroSection = () => {
   return (
@@ -270,7 +272,6 @@ export default function Home() {
     <main className="flex flex-col items-center w-full mb-7">
       <HeroSection />
       <div className="py-24" />
-      <ImageComparison afterImage='/khamsat.jpeg' beforeImage='/khamsat.jpeg' />
       <FeatureSection />
       <div className="py-24" />
       <ExamplesSection />
