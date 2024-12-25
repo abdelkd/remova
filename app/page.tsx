@@ -255,7 +255,7 @@ const FeatureSection = () => {
 const ExamplesSection = () => {
   return (
     <Carousel>
-      <CarouselContent>
+      <CarouselContent className="relative">
         <ImageComparison afterImage='/khamsat.jpeg' beforeImage='/khamsat.jpeg' />
         <ImageComparison afterImage='/khamsat.jpeg' beforeImage='/khamsat.jpeg' />
       </CarouselContent>
@@ -270,6 +270,7 @@ export default function Home() {
     <main className="flex flex-col items-center w-full mb-7">
       <HeroSection />
       <div className="py-24" />
+      <ImageComparison afterImage='/khamsat.jpeg' beforeImage='/khamsat.jpeg' />
       <FeatureSection />
       <div className="py-24" />
       <ExamplesSection />
