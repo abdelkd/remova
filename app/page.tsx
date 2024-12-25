@@ -267,7 +267,7 @@ const FeatureSection = () => {
 
 const ExamplesSection = () => {
   return (
-    <Carousel className="max-w-6xl" id="examples">
+    <Carousel className="max-w-3xl" id="examples">
       <CarouselContent className="relative">
         <Image src={khamsat} alt={"an example image"} />
         <Image src={khamsat} alt={"an example image"} />
