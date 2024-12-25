@@ -52,9 +52,11 @@ const HeroSection = () => {
               Get Started
               <ArrowRight className="ml-2 w-4 h-4" />
             </Button>
-            <Button size="lg" variant="outline" className="text-base font-semibold px-8">
-              View Examples
-            </Button>
+            <a href="#examples">
+              <Button size="lg" variant="outline" className="text-base font-semibold px-8">
+                View Examples
+              </Button>
+            </a>
           </div>
 
           <div className="flex items-center gap-4 pt-4">
@@ -255,7 +257,7 @@ const FeatureSection = () => {
 
 const ExamplesSection = () => {
   return (
-    <Carousel className="max-w-6xl">
+    <Carousel className="max-w-6xl" id="examples">
       <CarouselContent className="relative">
         <Image src={khamsat} alt={"an example image"} />
         <Image src={khamsat} alt={"an example image"} />
