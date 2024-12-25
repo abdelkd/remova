@@ -50,9 +50,11 @@ const HeroSection = () => {
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4">
-            <Button size="lg" className="text-base font-semibold px-8">
-              Get Started
-              <ArrowRight className="ml-2 w-4 h-4" />
+            <Button size="lg" className="text-base font-semibold px-8" asChild>
+              <Link href="/app">
+                Get Started
+                <ArrowRight className="ml-2 w-4 h-4" />
+              </Link>
             </Button>
             <Button size="lg" variant="outline" className="text-base font-semibold px-8" asChild>
               <Link href="#examples">
@@ -247,6 +249,7 @@ const FeatureSection = () => {
             <Button
               size="lg"
               className="w-full py-6 text-lg font-semibold rounded-xl"
+              asChild
             >
               <Link href="/app">
                 Try It Now
