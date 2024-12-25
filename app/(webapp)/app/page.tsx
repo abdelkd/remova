@@ -1,8 +1,7 @@
 'use client';
+
 import React, { useState } from 'react';
-import Image from 'next/image';
 import {
-  Upload,
   Image as ImageIcon,
   Plus,
   Info,
@@ -10,142 +9,17 @@ import {
 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Checkbox } from '@/components/ui/checkbox';
-import { useUploadFile } from '@/hooks/use-upload-file';
-
-import type { OnInteractionOutside } from '@/components/ui/types';
-
-
-const BuyCreditsDialog = () => {
-  return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button variant="outline" size="sm">
-          Buy Credits
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle>Buy Additional Credits</DialogTitle>
-        </DialogHeader>
-        <div className="grid gap-4">
-          <div className="grid gap-2">
-            <div className="flex items-center justify-between p-4 rounded-lg border border-zinc-200 hover:border-primary/50 cursor-pointer">
-              <div>
-                <div className="font-medium">50 Credits</div>
-                <div className="text-sm text-zinc-500">Perfect for small projects</div>
-              </div>
-              <Button>$10</Button>
-            </div>
-            <div className="flex items-center justify-between p-4 rounded-lg border border-zinc-200 hover:border-primary/50 cursor-pointer">
-              <div>
-                <div className="font-medium">200 Credits</div>
-                <div className="text-sm text-zinc-500">Most popular</div>
-              </div>
-              <Button>$35</Button>
-            </div>
-            <div className="flex items-center justify-between p-4 rounded-lg border border-zinc-200 hover:border-primary/50 cursor-pointer">
-              <div>
-                <div className="font-medium">500 Credits</div>
-                <div className="text-sm text-zinc-500">Best value</div>
-              </div>
-              <Button>$75</Button>
-            </div>
-          </div>
-        </div>
-      </DialogContent>
-    </Dialog>
-  )
-}
-
-
-const UploadImageDialog = ({ children }: { children: React.ReactNode }) => {
-  const [dontSave, setDontSave] = useState(false);
-  const [creditsLeft,] = useState(43)
-
-  const { file, uploadFile, inputElement, base64String } = useUploadFile();
-
-  const isUploading = false;
-
-  const onInteractOutside: OnInteractionOutside = (event) => {
-    if (isUploading) {
-      event.preventDefault();
-      return;
-    }
-  }
-
-  return (
-    <div>
-      {inputElement}
-      <Dialog>
-        <DialogTrigger asChild>
-          {children}
-        </DialogTrigger>
-        <DialogContent className="sm:max-w-md" onInteractOutside={onInteractOutside}>
-          <DialogHeader>
-            <DialogTitle>Upload Image</DialogTitle>
-          </DialogHeader>
-          <div className="grid gap-6">
-            <div className="flex flex-col items-center gap-4 p-6 border-2 border-dashed border-zinc-200 rounded-lg bg-zinc-50">
-              {file ? (
-                <Image src={base64String!} alt="preview image" className="max-w-md w-full h-auto" width={550} height={550} />
-              )
-                : (
-                  <>
-                    <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                      <Upload className="w-6 h-6 text-primary" />
-                    </div>
-                    <div className="text-center">
-                      <p className="text-sm font-medium text-zinc-900">Click to upload or drag and drop</p>
-                      <p className="text-sm text-zinc-500">Up to 15MB per image</p>
-                    </div>
-                    <Button variant="outline" onClick={uploadFile} disabled={isUploading}>
-                      {isUploading ? 'Uploading...' : 'Select File'}
-                    </Button>
-                  </>
-                )
-              }
-            </div>
-
-            <div className="flex items-start space-x-2">
-              <Checkbox
-                id="dontSave"
-                checked={dontSave}
-                onChange={() => setDontSave((prev) => !prev)}
-              />
-              <div className="grid gap-1.5 leading-none">
-                <label
-                  htmlFor="dontSave"
-                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                >
-                  Don&apos;t save to my account
-                </label>
-                <p className="text-sm text-zinc-500">
-                  Image will be deleted after processing
-                </p>
-              </div>
-            </div>
-
-            <Button disabled={isUploading || creditsLeft === 0}>
-              {isUploading ? 'Processing...' : `Remove Background (1 Credit)`}
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
-    </div>
-  );
-}
+import { Dialog, DialogTrigger } from '@/components/ui/dialog';
+import { BuyCreditsDialog } from '@/components/buy-credits-dialog';
+import { UploadImageDialog } from '../../../components/upload-image-dialog';
 
 const MainApp = () => {
   const [images] = useState([]);
 
-  // Simulated user credits
   const creditsLeft = 43;
 
   return (
     <div className="min-h-screen bg-zinc-50">
-      {/* Header with credits */}
       <div className="border-b bg-white">
         <div className="max-w-6xl mx-auto p-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -163,12 +37,10 @@ const MainApp = () => {
         </div>
       </div>
 
-      {/* Main content */}
       <div className="max-w-6xl mx-auto p-6">
         <div className="mb-8 flex items-center justify-between">
           <h1 className="text-2xl font-bold text-zinc-900">Background Removal</h1>
 
-          {/* Upload Dialog */}
           <UploadImageDialog>
             <Button className="gap-2">
               <Plus className="w-4 h-4" />
@@ -177,7 +49,6 @@ const MainApp = () => {
           </UploadImageDialog>
         </div>
 
-        {/* Image grid or empty state */}
         {images.length === 0 ? (
           <div className="rounded-lg border border-dashed border-zinc-200 p-12">
             <div className="flex flex-col items-center gap-4">
@@ -206,7 +77,6 @@ const MainApp = () => {
         )}
       </div>
 
-      {/* Info banner */}
       {creditsLeft < 10 && (
         <div className="fixed bottom-0 left-0 right-0 bg-zinc-900 text-white p-4">
           <div className="max-w-6xl mx-auto flex items-center justify-between">
@@ -220,7 +90,6 @@ const MainApp = () => {
                   Buy Credits
                 </Button>
               </DialogTrigger>
-              {/* Credits purchase dialog content */}
             </Dialog>
           </div>
         </div>
