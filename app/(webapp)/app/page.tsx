@@ -1,5 +1,6 @@
 'use client';
 import React, { useRef, useState, Fragment } from 'react';
+import Image from 'next/image';
 import {
   Upload,
   Image as ImageIcon,
@@ -11,7 +12,6 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useUploadFile } from '@/hooks/use-upload-file';
-import { fileToBase64 } from '@/lib/utils';
 
 const BuyCreditsDialog = () => {
   return (
@@ -84,7 +84,7 @@ const UploadImageDialog = ({ children }: { children: React.ReactNode }) => {
           <div className="grid gap-6">
             <div className="flex flex-col items-center gap-4 p-6 border-2 border-dashed border-zinc-200 rounded-lg bg-zinc-50">
               {file ? (
-                <img src={base64String} alt="preview image" className="max-w-md w-full h-auto" />
+                <Image src={base64String} alt="preview image" className="max-w-md w-full h-auto" width={550} height={550} />
               )
                   : (
                 <>
@@ -114,7 +114,7 @@ const UploadImageDialog = ({ children }: { children: React.ReactNode }) => {
                   htmlFor="dontSave"
                   className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                 >
-                  Don't save to my account
+                  Don&apos;t save to my account
                 </label>
                 <p className="text-sm text-zinc-500">
                   Image will be deleted after processing
@@ -133,14 +133,10 @@ const UploadImageDialog = ({ children }: { children: React.ReactNode }) => {
 }
 
 const MainApp = () => {
-  const [images, setImages] = useState([]);
-  const [isUploading, setIsUploading] = useState(false);
-  const [dontSave, setDontSave] = useState(false);
-  const newImageButtonRef = useRef<HTMLButtonElement>(null)
+  const [images] = useState([]);
 
   // Simulated user credits
   const creditsLeft = 43;
-  const totalUsed = 57;
 
   return (
     <div className="min-h-screen bg-zinc-50">

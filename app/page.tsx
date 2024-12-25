@@ -1,4 +1,3 @@
-import { H1, H2, P } from "../components/ui/typography";
 import { Camera, Wand2, ArrowRight, Image as ImageIcon } from "lucide-react";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
