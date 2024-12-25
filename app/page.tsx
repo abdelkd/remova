@@ -2,6 +2,8 @@ import Image from 'next/image';
 import { Camera, Wand2, ArrowRight, Image as ImageIcon } from "lucide-react";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Carousel, CarouselContent, CarouselNext, CarouselPrevious } from '../components/ui/carousel';
+import ImageComparison from '../components/image-comparison';
 
 const HeroSection = () => {
   return (
@@ -250,12 +252,27 @@ const FeatureSection = () => {
   );
 };
 
+const ExamplesSection = () => {
+  return (
+    <Carousel>
+      <CarouselContent>
+        <ImageComparison afterImage='/khamsat.jpeg' beforeImage='/khamsat.jpeg' />
+        <ImageComparison afterImage='/khamsat.jpeg' beforeImage='/khamsat.jpeg' />
+      </CarouselContent>
+      <CarouselPrevious />
+      <CarouselNext />
+    </Carousel>
+  )
+}
+
 export default function Home() {
   return (
     <main className="flex flex-col items-center w-full mb-7">
       <HeroSection />
       <div className="py-24" />
       <FeatureSection />
+      <div className="py-24" />
+      <ExamplesSection />
       <div className="py-24" />
       <PricingSection />
     </main>
