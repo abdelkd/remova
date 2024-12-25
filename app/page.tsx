@@ -1,7 +1,12 @@
-import { H1, H2, P } from "../components/ui/typography";
+import Image from 'next/image';
+import Link from 'next/link';
 import { Camera, Wand2, ArrowRight, Image as ImageIcon } from "lucide-react";
+
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Carousel, CarouselContent, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
+
+import khamsat from '@/assets/khamsat.jpeg';
 
 const HeroSection = () => {
   return (
@@ -45,12 +50,16 @@ const HeroSection = () => {
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4">
-            <Button size="lg" className="text-base font-semibold px-8">
-              Get Started
-              <ArrowRight className="ml-2 w-4 h-4" />
+            <Button size="lg" className="text-base font-semibold px-8" asChild>
+              <Link href="/app">
+                Get Started
+                <ArrowRight className="ml-2 w-4 h-4" />
+              </Link>
             </Button>
-            <Button size="lg" variant="outline" className="text-base font-semibold px-8">
-              View Examples
+            <Button size="lg" variant="outline" className="text-base font-semibold px-8" asChild>
+              <Link href="#examples">
+                View Examples
+              </Link>
             </Button>
           </div>
 
@@ -70,9 +79,11 @@ const HeroSection = () => {
         <div className="relative">
           <div className="aspect-square rounded-2xl bg-zinc-100 overflow-hidden">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_40%_40%,rgba(0,0,0,0)_0%,rgba(0,0,0,0.1)_100%)]" />
-            <img
+            <Image
               src="/api/placeholder/800/800"
               alt="Image Processing Demo"
+              width={800}
+              height={800}
               className="object-cover w-full h-full rounded-2xl"
             />
           </div>
@@ -150,8 +161,11 @@ const PricingSection = () => {
           <div className="pt-4">
             <Button
               className="w-full text-white py-6 text-lg font-semibold"
+              asChild
             >
-              Upgrade Now
+              <Link href="/app">
+                Upgrade Now
+              </Link>
             </Button>
             <p className="text-center text-sm text-gray-500 mt-3">
               Start processing immediately after upgrade
@@ -171,8 +185,10 @@ const FeatureSection = () => {
         {/* Left Column - Image/Preview */}
         <div className="relative">
           <div className="aspect-square rounded-2xl bg-zinc-50 flex items-center justify-center">
-            <img
+            <Image
               src="/api/placeholder/600/600"
+              width={600}
+              height={600}
               alt="Background Removal Demo"
               className="rounded-xl"
             />
@@ -233,8 +249,11 @@ const FeatureSection = () => {
             <Button
               size="lg"
               className="w-full py-6 text-lg font-semibold rounded-xl"
+              asChild
             >
-              Try It Now
+              <Link href="/app">
+                Try It Now
+              </Link>
             </Button>
             <p className="text-center text-sm text-zinc-500">
               Get pixel-perfect results instantly
@@ -246,12 +265,28 @@ const FeatureSection = () => {
   );
 };
 
+const ExamplesSection = () => {
+  return (
+    <Carousel className="max-w-6xl" id="examples">
+      <CarouselContent className="relative">
+        <Image src={khamsat} alt={"an example image"} />
+        <Image src={khamsat} alt={"an example image"} />
+        <Image src={khamsat} alt={"an example image"} />
+      </CarouselContent>
+      <CarouselPrevious />
+      <CarouselNext />
+    </Carousel>
+  )
+}
+
 export default function Home() {
   return (
     <main className="flex flex-col items-center w-full mb-7">
       <HeroSection />
       <div className="py-24" />
       <FeatureSection />
+      <div className="py-24" />
+      <ExamplesSection />
       <div className="py-24" />
       <PricingSection />
     </main>
