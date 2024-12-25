@@ -54,11 +54,11 @@ const HeroSection = () => {
               Get Started
               <ArrowRight className="ml-2 w-4 h-4" />
             </Button>
-            <Link href="#examples">
-              <Button size="lg" variant="outline" className="text-base font-semibold px-8">
+            <Button size="lg" variant="outline" className="text-base font-semibold px-8" asChild>
+              <Link href="#examples">
                 View Examples
-              </Button>
-            </Link>
+              </Link>
+            </Button>
           </div>
 
           <div className="flex items-center gap-4 pt-4">
@@ -157,13 +157,14 @@ const PricingSection = () => {
           </div>
 
           <div className="pt-4">
-            <Link href="/app">
-              <Button
-                className="w-full text-white py-6 text-lg font-semibold"
-              >
+            <Button
+              className="w-full text-white py-6 text-lg font-semibold"
+              asChild
+            >
+              <Link href="/app">
                 Upgrade Now
-              </Button>
-            </Link>
+              </Link>
+            </Button>
             <p className="text-center text-sm text-gray-500 mt-3">
               Start processing immediately after upgrade
             </p>
@@ -247,7 +248,9 @@ const FeatureSection = () => {
               size="lg"
               className="w-full py-6 text-lg font-semibold rounded-xl"
             >
-              Try It Now
+              <Link href="/app">
+                Try It Now
+              </Link>
             </Button>
             <p className="text-center text-sm text-zinc-500">
               Get pixel-perfect results instantly
