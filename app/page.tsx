@@ -85,7 +85,7 @@ const HeroSection = () => {
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_40%_40%,rgba(0,0,0,0)_0%,rgba(0,0,0,0.1)_100%)]" />
             <Image
               src={image1}
-              alt="Image Processing Demo"
+              alt="A Woman with Glasses looking at the side"
               width={800}
               height={800}
               className="object-cover w-full h-full rounded-2xl"
@@ -193,7 +193,7 @@ const FeatureSection = () => {
               src={image2}
               width={600}
               height={600}
-              alt="Background Removal Demo"
+              alt="Man dressed formally in a white shirt, bow tie, and black cummerbund, with a thoughtful pose"
               className="rounded-xl"
             />
           </div>
@@ -273,9 +273,8 @@ const ExamplesSection = () => {
   return (
     <Carousel className="max-w-3xl" id="examples">
       <CarouselContent className="relative">
-        <Image src={image3} alt={"an example image"} />
-        <Image src={image4} alt={"an example image"} />
-        <Image src={image5} alt={"an example image"} />
+        <Image src={image3} alt="Smiling woman with long brown hair looking to the side" />
+        <Image src={image5} alt="Confident woman with natural curly hair wearing a black jacket" />
       </CarouselContent>
       <CarouselPrevious />
       <CarouselNext />
