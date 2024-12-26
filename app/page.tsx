@@ -9,7 +9,6 @@ import { Carousel, CarouselContent, CarouselNext, CarouselPrevious } from '@/com
 import image1 from '@/assets/1.webp';
 import image2 from '@/assets/2.webp';
 import image3 from '@/assets/3.webp';
-import image4 from '@/assets/4.webp';
 import image5 from '@/assets/5.webp';
 
 const HeroSection = () => {
