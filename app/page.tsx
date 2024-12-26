@@ -6,7 +6,6 @@ import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Carousel, CarouselContent, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 
-import khamsat from '@/assets/khamsat.jpeg';
 import image1 from '@/assets/1.webp';
 import image2 from '@/assets/2.webp';
 import image3 from '@/assets/3.webp';
