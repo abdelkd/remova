@@ -6,7 +6,10 @@ import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Carousel, CarouselContent, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 
-import khamsat from '@/assets/khamsat.jpeg';
+import image1 from '@/assets/1.webp';
+import image2 from '@/assets/2.webp';
+import image3 from '@/assets/3.webp';
+import image5 from '@/assets/5.webp';
 
 const HeroSection = () => {
   return (
@@ -80,8 +83,8 @@ const HeroSection = () => {
           <div className="aspect-square rounded-2xl bg-zinc-100 overflow-hidden">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_40%_40%,rgba(0,0,0,0)_0%,rgba(0,0,0,0.1)_100%)]" />
             <Image
-              src="/api/placeholder/800/800"
-              alt="Image Processing Demo"
+              src={image1}
+              alt="A Woman with Glasses looking at the side"
               width={800}
               height={800}
               className="object-cover w-full h-full rounded-2xl"
@@ -186,10 +189,10 @@ const FeatureSection = () => {
         <div className="relative">
           <div className="aspect-square rounded-2xl bg-zinc-50 flex items-center justify-center">
             <Image
-              src="/api/placeholder/600/600"
+              src={image2}
               width={600}
               height={600}
-              alt="Background Removal Demo"
+              alt="Man dressed formally in a white shirt, bow tie, and black cummerbund, with a thoughtful pose"
               className="rounded-xl"
             />
           </div>
@@ -269,9 +272,8 @@ const ExamplesSection = () => {
   return (
     <Carousel className="max-w-3xl" id="examples">
       <CarouselContent className="relative">
-        <Image src={khamsat} alt={"an example image"} />
-        <Image src={khamsat} alt={"an example image"} />
-        <Image src={khamsat} alt={"an example image"} />
+        <Image src={image3} alt="Smiling woman with long brown hair looking to the side" />
+        <Image src={image5} alt="Confident woman with natural curly hair wearing a black jacket" />
       </CarouselContent>
       <CarouselPrevious />
       <CarouselNext />
