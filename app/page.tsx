@@ -1,12 +1,16 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { Camera, Wand2, ArrowRight, Image as ImageIcon } from "lucide-react";
+import { Camera, Wand2, ArrowRight, Image as ImageIcon } from 'lucide-react';
 
-import { Card, CardHeader, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Carousel, CarouselContent, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
+import { Card, CardHeader, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import {
+  Carousel,
+  CarouselContent,
+  CarouselNext,
+  CarouselPrevious,
+} from '@/components/ui/carousel';
 
-import khamsat from '@/assets/khamsat.jpeg';
 import image1 from '@/assets/1.webp';
 import image2 from '@/assets/2.webp';
 import image3 from '@/assets/3.webp';
@@ -22,7 +26,9 @@ const HeroSection = () => {
           <div className="space-y-6">
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-zinc-100 rounded-full">
               <ImageIcon className="w-4 h-4 text-primary" />
-              <span className="text-sm font-medium text-zinc-800">AI-Powered Image Processing</span>
+              <span className="text-sm font-medium text-zinc-800">
+                AI-Powered Image Processing
+              </span>
             </div>
 
             <h1 className="text-5xl font-bold text-zinc-900 leading-tight">
@@ -31,7 +37,8 @@ const HeroSection = () => {
             </h1>
 
             <p className="text-xl text-zinc-600 max-w-lg">
-              Professional-grade image processing powered by advanced AI. Perfect for e-commerce, design, and content creation.
+              Professional-grade image processing powered by advanced AI.
+              Perfect for e-commerce, design, and content creation.
             </p>
           </div>
 
@@ -61,21 +68,28 @@ const HeroSection = () => {
                 <ArrowRight className="ml-2 w-4 h-4" />
               </Link>
             </Button>
-            <Button size="lg" variant="outline" className="text-base font-semibold px-8" asChild>
-              <Link href="#examples">
-                View Examples
-              </Link>
+            <Button
+              size="lg"
+              variant="outline"
+              className="text-base font-semibold px-8"
+              asChild
+            >
+              <Link href="#examples">View Examples</Link>
             </Button>
           </div>
 
           <div className="flex items-center gap-4 pt-4">
             <div className="flex -space-x-3">
               {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="w-8 h-8 rounded-full bg-zinc-200 border-2 border-white" />
+                <div
+                  key={i}
+                  className="w-8 h-8 rounded-full bg-zinc-200 border-2 border-white"
+                />
               ))}
             </div>
             <div className="text-sm text-zinc-600">
-              <span className="font-semibold text-zinc-900">4.9/5</span> from over 1,000 reviews
+              <span className="font-semibold text-zinc-900">4.9/5</span> from
+              over 1,000 reviews
             </div>
           </div>
         </div>
@@ -95,8 +109,12 @@ const HeroSection = () => {
 
           {/* Floating Stats */}
           <div className="absolute -left-8 top-1/4 bg-white shadow-lg rounded-xl p-4 max-w-[200px]">
-            <div className="text-sm font-medium text-zinc-900">Processing Images</div>
-            <div className="text-xs text-zinc-600 mt-1">Real-time AI enhancement</div>
+            <div className="text-sm font-medium text-zinc-900">
+              Processing Images
+            </div>
+            <div className="text-xs text-zinc-600 mt-1">
+              Real-time AI enhancement
+            </div>
             <div className="w-full bg-zinc-100 rounded-full h-1.5 mt-3">
               <div className="bg-primary h-1.5 rounded-full w-2/3"></div>
             </div>
@@ -120,7 +138,6 @@ const HeroSection = () => {
 };
 
 const PricingSection = () => {
-
   return (
     <div className="w-full max-w-md mx-auto p-6">
       <Card className="relative overflow-hidden border-2 border-primary">
@@ -132,7 +149,9 @@ const PricingSection = () => {
             <Camera className="w-10 h-10 mx-auto text-primary" />
           </div>
           <h2 className="text-2xl font-bold mb-2">Process Your Images</h2>
-          <p className="text-sm text-gray-600">Unlock full processing capabilities</p>
+          <p className="text-sm text-gray-600">
+            Unlock full processing capabilities
+          </p>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="text-center">
@@ -168,9 +187,7 @@ const PricingSection = () => {
               className="w-full text-white py-6 text-lg font-semibold"
               asChild
             >
-              <Link href="/app">
-                Upgrade Now
-              </Link>
+              <Link href="/app">Upgrade Now</Link>
             </Button>
             <p className="text-center text-sm text-gray-500 mt-3">
               Start processing immediately after upgrade
@@ -179,9 +196,8 @@ const PricingSection = () => {
         </CardContent>
       </Card>
     </div>
-  )
-}
-
+  );
+};
 
 const FeatureSection = () => {
   return (
@@ -208,7 +224,9 @@ const FeatureSection = () => {
           <div className="space-y-4">
             <div className="flex items-center gap-3">
               <Wand2 className="w-8 h-8 text-primary" />
-              <span className="text-sm font-medium text-primary">AUTOMATIC</span>
+              <span className="text-sm font-medium text-primary">
+                AUTOMATIC
+              </span>
             </div>
             <h2 className="text-4xl font-bold text-zinc-900">
               Effortless, Professional Background Removal
@@ -224,7 +242,9 @@ const FeatureSection = () => {
                 <span className="text-2xl font-bold text-primary">1s</span>
               </div>
               <div className="text-zinc-600">
-                Process images in<br />under 1 seconds
+                Process images in
+                <br />
+                under 1 seconds
               </div>
             </div>
 
@@ -233,19 +253,25 @@ const FeatureSection = () => {
                 <div className="w-5 h-5 rounded-full bg-zinc-100 flex items-center justify-center mr-3">
                   <span className="text-primary text-sm">✓</span>
                 </div>
-                <span className="text-zinc-600">Advanced edge detection technology</span>
+                <span className="text-zinc-600">
+                  Advanced edge detection technology
+                </span>
               </div>
               <div className="flex items-center">
                 <div className="w-5 h-5 rounded-full bg-zinc-100 flex items-center justify-center mr-3">
                   <span className="text-primary text-sm">✓</span>
                 </div>
-                <span className="text-zinc-600">Preserves fine details like hair</span>
+                <span className="text-zinc-600">
+                  Preserves fine details like hair
+                </span>
               </div>
               <div className="flex items-center">
                 <div className="w-5 h-5 rounded-full bg-zinc-100 flex items-center justify-center mr-3">
                   <span className="text-primary text-sm">✓</span>
                 </div>
-                <span className="text-zinc-600">Works with complex backgrounds</span>
+                <span className="text-zinc-600">
+                  Works with complex backgrounds
+                </span>
               </div>
             </div>
           </div>
@@ -256,9 +282,7 @@ const FeatureSection = () => {
               className="w-full py-6 text-lg font-semibold rounded-xl"
               asChild
             >
-              <Link href="/app">
-                Try It Now
-              </Link>
+              <Link href="/app">Try It Now</Link>
             </Button>
             <p className="text-center text-sm text-zinc-500">
               Get pixel-perfect results instantly
@@ -274,15 +298,15 @@ const ExamplesSection = () => {
   return (
     <Carousel className="max-w-3xl" id="examples">
       <CarouselContent className="relative">
-        <Image src={image3} alt={"an example image"} />
-        <Image src={image4} alt={"an example image"} />
-        <Image src={image5} alt={"an example image"} />
+        <Image src={image3} alt={'an example image'} />
+        <Image src={image4} alt={'an example image'} />
+        <Image src={image5} alt={'an example image'} />
       </CarouselContent>
       <CarouselPrevious />
       <CarouselNext />
     </Carousel>
-  )
-}
+  );
+};
 
 export default function Home() {
   return (
