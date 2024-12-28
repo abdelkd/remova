@@ -10,13 +10,15 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from '@/components/ui/carousel';
+import { getCurrentSession } from '@/lib/auth';
 
 import image1 from '@/assets/1.webp';
 import image2 from '@/assets/2.webp';
 import image3 from '@/assets/3.webp';
 import image5 from '@/assets/5.webp';
 
-const HeroSection = () => {
+const HeroSection = async () => {
+  const { user } = await getCurrentSession();
   return (
     <div className="w-full max-w-6xl mx-auto p-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center min-h-[80vh]">
@@ -62,7 +64,7 @@ const HeroSection = () => {
 
           <div className="flex flex-col sm:flex-row gap-4">
             <Button size="lg" className="text-base font-semibold px-8" asChild>
-              <Link href="/app">
+              <Link href={user ? '/app' : '/login'}>
                 Get Started
                 <ArrowRight className="ml-2 w-4 h-4" />
               </Link>
@@ -198,7 +200,9 @@ const PricingSection = () => {
   );
 };
 
-const FeatureSection = () => {
+const FeatureSection = async () => {
+  const { user } = await getCurrentSession();
+
   return (
     <div className="w-full max-w-6xl mx-auto p-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
@@ -281,7 +285,7 @@ const FeatureSection = () => {
               className="w-full py-6 text-lg font-semibold rounded-xl"
               asChild
             >
-              <Link href="/app">Try It Now</Link>
+              <Link href={user ? '/app' : '/login'}>Try It Now</Link>
             </Button>
             <p className="text-center text-sm text-zinc-500">
               Get pixel-perfect results instantly
