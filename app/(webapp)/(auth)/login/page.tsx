@@ -45,6 +45,7 @@ const LoginPage = () => {
     const user = await loginUser(values);
     if (!user) {
       form.setError('root', { message: 'Invalid login credentials.' });
+      return;
     }
 
     setIsSuccess(true);
