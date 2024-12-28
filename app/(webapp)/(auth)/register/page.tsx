@@ -1,7 +1,10 @@
 'use client';
 
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+
 import {
   Card,
   CardHeader,
@@ -21,14 +24,15 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { zodResolver } from '@hookform/resolvers/zod';
+import LoadingSpinner from '@/components/loading-spinner';
 import { authFormSchema } from '@/schemas';
 
-import { signupUser } from '@/server/actions';
+import { loginUser, signupUser } from '@/server/actions';
 import type { AuthForm } from '@/types';
 
 const SignupPage = () => {
   const router = useRouter();
+  const [isSuccess, setIsSuccess] = useState(false);
   const form = useForm<AuthForm>({
     resolver: zodResolver(authFormSchema),
     defaultValues: {
@@ -43,9 +47,15 @@ const SignupPage = () => {
       form.setError('root', {
         message: 'User already exists, please sign in.',
       });
+      return;
     }
 
-    router.push('/app');
+    setIsSuccess(true);
+    loginUser(values)
+      .then(() => {
+        router.push('/app');
+      })
+      .catch(() => router.push('/login'));
   };
 
   return (
@@ -88,9 +98,23 @@ const SignupPage = () => {
                     </FormItem>
                   )}
                 />
+                {isSuccess ? (
+                  <p className="text-sm text-green-500">
+                    Successfully registered, logging in.
+                  </p>
+                ) : null}
               </div>
 
-              <Button className="w-full">Sign In</Button>
+              <Button className="w-full" disabled={form.formState.isSubmitting}>
+                {form.formState.isSubmitting ? (
+                  <>
+                    <LoadingSpinner />
+                    Creating account...
+                  </>
+                ) : (
+                  'Sign Up'
+                )}
+              </Button>
             </form>
           </Form>
         </CardContent>
