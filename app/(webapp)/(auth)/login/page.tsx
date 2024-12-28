@@ -1,5 +1,9 @@
 'use client';
 
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Card,
   CardHeader,
@@ -20,14 +24,15 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { authFormSchema } from '@/schemas';
 
 import { loginUser } from '@/server/actions';
 import type { AuthForm } from '@/types';
+import LoadingSpinner from '@/components/loading-spinner';
 
 const LoginPage = () => {
+  const router = useRouter();
+  const [isSuccess, setIsSuccess] = useState(false);
   const form = useForm<AuthForm>({
     resolver: zodResolver(authFormSchema),
     defaultValues: {
@@ -41,6 +46,9 @@ const LoginPage = () => {
     if (!user) {
       form.setError('root', { message: 'Invalid login credentials.' });
     }
+
+    setIsSuccess(true);
+    router.push('/app');
   };
 
   return (
@@ -84,10 +92,26 @@ const LoginPage = () => {
                   )}
                 />
                 <FormRootError />
+                {isSuccess ? (
+                  <p className="text-sm text-green-500">
+                    Logged in successfully
+                  </p>
+                ) : null}
               </div>
 
-              <Button type="submit" className="w-full">
-                Sign In
+              <Button
+                type="submit"
+                className="w-full"
+                disabled={form.formState.isSubmitting}
+              >
+                {form.formState.isSubmitting ? (
+                  <>
+                    <LoadingSpinner />
+                    Loggin in...
+                  </>
+                ) : (
+                  'Sign In'
+                )}
               </Button>
             </form>
           </Form>
