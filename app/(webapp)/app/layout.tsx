@@ -1,4 +1,4 @@
-import { getCurrentSession } from '@/server/actions';
+import { getCurrentSession } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 
 export default async function AppLayout({ children }: React.PropsWithChildren) {
