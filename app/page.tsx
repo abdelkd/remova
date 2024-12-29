@@ -4,18 +4,10 @@ import { Camera, Wand2, ArrowRight, Image as ImageIcon } from 'lucide-react';
 
 import { Card, CardHeader, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import {
-  Carousel,
-  CarouselContent,
-  CarouselNext,
-  CarouselPrevious,
-} from '@/components/ui/carousel';
 import { getCurrentSession } from '@/lib/auth';
 
 import image1 from '@/assets/1.webp';
 import image2 from '@/assets/2.webp';
-import image3 from '@/assets/3.webp';
-import image5 from '@/assets/5.webp';
 
 const HeroSection = async () => {
   const { user } = await getCurrentSession();
@@ -297,27 +289,6 @@ const FeatureSection = async () => {
   );
 };
 
-const ExamplesSection = () => {
-  return (
-    <Carousel className="max-w-lg" id="examples">
-      <CarouselContent className="relative">
-        <Image
-          src={image3}
-          alt="Smiling woman with long brown hair looking to the side"
-          className="border border-red-400 max-h-96 object-contain"
-        />
-        <Image
-          src={image5}
-          alt="Confident woman with natural curly hair wearing a black jacket"
-          className="border border-red-400 max-h-96 object-contain"
-        />
-      </CarouselContent>
-      <CarouselPrevious />
-      <CarouselNext />
-    </Carousel>
-  );
-};
-
 export default function Home() {
   return (
     <main className="flex flex-col items-center w-full mb-7">
@@ -325,9 +296,8 @@ export default function Home() {
       <div className="py-24" />
       <FeatureSection />
       <div className="py-24" />
-      <ExamplesSection />
-      <div className="py-24" />
       <PricingSection />
+      <div className="py-4" />
     </main>
   );
 }
