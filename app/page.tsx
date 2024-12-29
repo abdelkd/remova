@@ -299,17 +299,17 @@ const FeatureSection = async () => {
 
 const ExamplesSection = () => {
   return (
-    <Carousel className="h-48" id="examples">
+    <Carousel className="max-w-lg" id="examples">
       <CarouselContent className="relative">
         <Image
           src={image3}
           alt="Smiling woman with long brown hair looking to the side"
-          className="border border-red-400 max-h-96"
+          className="border border-red-400 max-h-96 object-contain"
         />
         <Image
           src={image5}
           alt="Confident woman with natural curly hair wearing a black jacket"
-          className="border border-red-400 max-h-96"
+          className="border border-red-400 max-h-96 object-contain"
         />
       </CarouselContent>
       <CarouselPrevious />
