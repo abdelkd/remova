@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import Link from 'next/link';
 
 import {
   Card,
@@ -21,6 +22,7 @@ import {
   FormControl,
   FormDescription,
   FormMessage,
+  FormRootError
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -98,9 +100,10 @@ const SignupPage = () => {
                     </FormItem>
                   )}
                 />
+                <FormRootError />
                 {isSuccess ? (
                   <p className="text-sm text-green-500">
-                    Successfully registered, logging in.
+                    Successfully registered, logging in...
                   </p>
                 ) : null}
               </div>
@@ -115,6 +118,10 @@ const SignupPage = () => {
                   'Sign Up'
                 )}
               </Button>
+              <p>
+                Already have an account? <Button variant="link" asChild><Link href="/login" className="px-2">Sign In</Link></Button>
+              </p>
+
             </form>
           </Form>
         </CardContent>
