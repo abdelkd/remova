@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import Link from 'next/link';
+
 import {
   Card,
   CardHeader,
@@ -114,6 +116,14 @@ const LoginPage = () => {
                   'Sign In'
                 )}
               </Button>
+              <p>
+                Do not have an account?{' '}
+                <Button variant="link" asChild>
+                  <Link href="/register" className="px-2">
+                    Sign Up
+                  </Link>
+                </Button>
+              </p>
             </form>
           </Form>
         </CardContent>
