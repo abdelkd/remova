@@ -79,20 +79,20 @@ const HeroSection = async () => {
             </Button>
           </div>
 
-          <div className="flex items-center gap-4 pt-4">
-            <div className="flex -space-x-3">
-              {[1, 2, 3, 4].map((i) => (
-                <div
-                  key={i}
-                  className="w-8 h-8 rounded-full bg-zinc-200 border-2 border-white"
-                />
-              ))}
-            </div>
-            <div className="text-sm text-zinc-600">
-              <span className="font-semibold text-zinc-900">4.9/5</span> from
-              over 1,000 reviews
-            </div>
-          </div>
+          {/* <div className="flex items-center gap-4 pt-4"> */}
+          {/*   <div className="flex -space-x-3"> */}
+          {/*     {[1, 2, 3, 4].map((i) => ( */}
+          {/*       <div */}
+          {/*         key={i} */}
+          {/*         className="w-8 h-8 rounded-full bg-zinc-200 border-2 border-white" */}
+          {/*       /> */}
+          {/*     ))} */}
+          {/*   </div> */}
+          {/*   <div className="text-sm text-zinc-600"> */}
+          {/*     <span className="font-semibold text-zinc-900">4.9/5</span> from */}
+          {/*     over 1,000 reviews */}
+          {/*   </div> */}
+          {/* </div> */}
         </div>
 
         {/* Right Column - Image */}
