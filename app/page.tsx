@@ -299,11 +299,12 @@ const FeatureSection = async () => {
 
 const ExamplesSection = () => {
   return (
-    <Carousel className="max-w-3xl" id="examples">
+    <Carousel className="max-w-3xl h-48" id="examples">
       <CarouselContent className="relative">
         <Image
           src={image3}
           alt="Smiling woman with long brown hair looking to the side"
+          className="border border-red-400"
         />
         <Image
           src={image5}
