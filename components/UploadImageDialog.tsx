@@ -120,7 +120,7 @@ export const UploadImageDialog = ({
             </div>
 
             <Button
-              disabled={isUploading || creditsLeft === 0 || !file}
+              disabled={isUploading || creditsLeft === 0 || file === undefined}
               onClick={onUpload}
             >
               {isUploading ? 'Processing...' : `Remove Background (1 Credit)`}

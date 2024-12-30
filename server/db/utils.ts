@@ -1,7 +1,10 @@
+import { createClient } from '@/lib/supabase/server';
 import { db, userTable } from '@/server/db';
-import supabase from '@/server/supabase';
 import { eq } from 'drizzle-orm';
+import { cookies } from 'next/headers';
 import { randomUUID } from 'node:crypto';
+
+const supabase = createClient(await cookies());
 
 export const getUserByEmail = (email: string) => {
   return db.select().from(userTable).where(eq(userTable.email, email));
