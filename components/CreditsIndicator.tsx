@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation';
 
 import { Skeleton } from '@/components/ui/skeleton';
 import { getCurrentSession } from '@/lib/auth';
-import { getUserCredits } from '@/server/db';
+import { getCachedUserCredits } from '@/lib/cache';
 
 export const CreditsIndicatorSkeleton = () => {
   return (
@@ -15,8 +15,7 @@ const CreditsIndicator = async () => {
   const { user } = await getCurrentSession();
   if (!user) return redirect('/login');
 
-  const result = await getUserCredits(user.id!);
-  const creditsLeft = result[0].creditsLeft!;
+  const creditsLeft = await getCachedUserCredits(user.id);
 
   return (
     <div className="flex items-center gap-2 px-3 py-1.5 bg-zinc-100 rounded-full">
