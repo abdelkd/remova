@@ -5,13 +5,17 @@ import { Button } from '@/components/ui/button';
 import { UploadImageDialog } from '@/components/UploadImageDialog';
 import { getCurrentSession } from '@/lib/auth';
 import { getCachedUserCredits } from '@/lib/cache';
+import { getUserBucket } from '@/server/db';
 
 const UserImagesGrid = async () => {
   const { user } = await getCurrentSession();
   if (!user) return redirect('/login');
 
   const creditsLeft = await getCachedUserCredits(user.id);
+  const userBucket = await getUserBucket(user.id);
+
   const images = [];
+
   return (
     <>
       {images.length === 0 ? (
@@ -29,7 +33,10 @@ const UserImagesGrid = async () => {
                 processed uses 1 credit.
               </p>
             </div>
-            <UploadImageDialog creditsLeft={creditsLeft}>
+            <UploadImageDialog
+              creditsLeft={creditsLeft}
+              userBucket={userBucket}
+            >
               <Button variant="outline" className="mt-2">
                 <Plus className="w-4 h-4 mr-2" />
                 Upload Image
