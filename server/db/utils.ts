@@ -10,8 +10,9 @@ export const registerNewUser = (email: string, password: string) => {
 };
 
 export const getUserCredits = async (id: number) => {
-  return db
+  const result = await db
     .select({ creditsLeft: userTable.creditsLeft })
     .from(userTable)
     .where(eq(userTable.id, id));
+  return result[0].creditsLeft;
 };

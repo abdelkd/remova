@@ -1,18 +1,16 @@
-import { Image as ImageIcon, Plus, Info } from 'lucide-react';
+import { Image as ImageIcon, Plus } from 'lucide-react';
 import { Suspense } from 'react';
 
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogTrigger } from '@/components/ui/dialog';
 import { BuyCreditsDialog } from '@/components/BuyCreditsDialog';
 import { UploadImageDialog } from '@/components/upload-image-dialog';
 import UserImagesGrid from '@/components/UserImagesGrid';
 import CreditsIndicator, {
   CreditsIndicatorSkeleton,
 } from '@/components/CreditsIndicator';
+import LowCreditsInfo from '@/components/LowCreditsInfo';
 
 const MainApp = () => {
-  const creditsLeft = 43;
-
   return (
     <div className="min-h-screen bg-zinc-50">
       <div className="border-b bg-white">
@@ -48,29 +46,9 @@ const MainApp = () => {
         <UserImagesGrid />
       </div>
 
-      {creditsLeft < 10 && (
-        <div className="fixed bottom-0 left-0 right-0 bg-zinc-900 text-white p-4">
-          <div className="max-w-6xl mx-auto flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Info className="w-4 h-4" />
-              <span className="text-sm">
-                Running low on credits? Buy more to continue removing
-                backgrounds.
-              </span>
-            </div>
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button
-                  variant="outline"
-                  className="text-white border-white hover:text-zinc-900"
-                >
-                  Buy Credits
-                </Button>
-              </DialogTrigger>
-            </Dialog>
-          </div>
-        </div>
-      )}
+      <Suspense>
+        <LowCreditsInfo />
+      </Suspense>
     </div>
   );
 };
