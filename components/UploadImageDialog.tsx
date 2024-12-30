@@ -2,10 +2,14 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
+import { Upload } from 'lucide-react';
 import {
-  Upload,
-} from 'lucide-react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
 
@@ -13,9 +17,13 @@ import { useUploadFile } from '@/hooks/use-upload-file';
 
 import type { OnInteractionOutside } from '@/components/ui/types';
 
-export const UploadImageDialog = ({ children }: { children: React.ReactNode }) => {
+type Props = {
+  creditsLeft: number;
+  children: React.ReactNode;
+};
+
+export const UploadImageDialog = ({ creditsLeft, children }: Props) => {
   const [dontSave, setDontSave] = useState(false);
-  const [creditsLeft,] = useState(43)
 
   const { file, uploadFile, inputElement, base64String } = useUploadFile();
 
@@ -26,39 +34,52 @@ export const UploadImageDialog = ({ children }: { children: React.ReactNode }) =
       event.preventDefault();
       return;
     }
-  }
+  };
 
   return (
     <div>
       {inputElement}
       <Dialog>
-        <DialogTrigger asChild>
-          {children}
-        </DialogTrigger>
-        <DialogContent className="sm:max-w-md" onInteractOutside={onInteractOutside}>
+        <DialogTrigger asChild>{children}</DialogTrigger>
+        <DialogContent
+          className="sm:max-w-md"
+          onInteractOutside={onInteractOutside}
+        >
           <DialogHeader>
             <DialogTitle>Upload Image</DialogTitle>
           </DialogHeader>
           <div className="grid gap-6">
             <div className="flex flex-col items-center gap-4 p-6 border-2 border-dashed border-zinc-200 rounded-lg bg-zinc-50">
               {file ? (
-                <Image src={base64String!} alt="preview image" className="max-w-md w-full h-auto" width={550} height={550} />
-              )
-                : (
-                  <>
-                    <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                      <Upload className="w-6 h-6 text-primary" />
-                    </div>
-                    <div className="text-center">
-                      <p className="text-sm font-medium text-zinc-900">Click to upload or drag and drop</p>
-                      <p className="text-sm text-zinc-500">Up to 15MB per image</p>
-                    </div>
-                    <Button variant="outline" onClick={uploadFile} disabled={isUploading}>
-                      {isUploading ? 'Uploading...' : 'Select File'}
-                    </Button>
-                  </>
-                )
-              }
+                <Image
+                  src={base64String!}
+                  alt="preview image"
+                  className="max-w-md w-full h-auto"
+                  width={550}
+                  height={550}
+                />
+              ) : (
+                <>
+                  <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                    <Upload className="w-6 h-6 text-primary" />
+                  </div>
+                  <div className="text-center">
+                    <p className="text-sm font-medium text-zinc-900">
+                      Click to upload or drag and drop
+                    </p>
+                    <p className="text-sm text-zinc-500">
+                      Up to 15MB per image
+                    </p>
+                  </div>
+                  <Button
+                    variant="outline"
+                    onClick={uploadFile}
+                    disabled={isUploading}
+                  >
+                    {isUploading ? 'Uploading...' : 'Select File'}
+                  </Button>
+                </>
+              )}
             </div>
 
             <div className="flex items-start space-x-2">
@@ -88,4 +109,4 @@ export const UploadImageDialog = ({ children }: { children: React.ReactNode }) =
       </Dialog>
     </div>
   );
-}
+};

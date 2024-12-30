@@ -1,9 +1,16 @@
 import { Image as ImageIcon, Plus } from 'lucide-react';
+import { redirect } from 'next/navigation';
 
 import { Button } from '@/components/ui/button';
-import { UploadImageDialog } from '@/components/upload-image-dialog';
+import { UploadImageDialog } from '@/components/UploadImageDialog';
+import { getCurrentSession } from '@/lib/auth';
+import { getCachedUserCredits } from '@/lib/cache';
 
-const UserImagesGrid = () => {
+const UserImagesGrid = async () => {
+  const { user } = await getCurrentSession();
+  if (!user) return redirect('/login');
+
+  const creditsLeft = await getCachedUserCredits(user.id);
   const images = [];
   return (
     <>
@@ -22,7 +29,7 @@ const UserImagesGrid = () => {
                 processed uses 1 credit.
               </p>
             </div>
-            <UploadImageDialog>
+            <UploadImageDialog creditsLeft={creditsLeft}>
               <Button variant="outline" className="mt-2">
                 <Plus className="w-4 h-4 mr-2" />
                 Upload Image

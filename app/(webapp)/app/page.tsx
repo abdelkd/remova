@@ -1,16 +1,24 @@
 import { Image as ImageIcon, Plus } from 'lucide-react';
 import { Suspense } from 'react';
+import { redirect } from 'next/navigation';
 
-import { Button } from '@/components/ui/button';
 import { BuyCreditsDialog } from '@/components/BuyCreditsDialog';
-import { UploadImageDialog } from '@/components/upload-image-dialog';
-import UserImagesGrid from '@/components/UserImagesGrid';
 import CreditsIndicator, {
   CreditsIndicatorSkeleton,
 } from '@/components/CreditsIndicator';
 import LowCreditsInfo from '@/components/LowCreditsInfo';
+import { Button } from '@/components/ui/button';
+import { UploadImageDialog } from '@/components/UploadImageDialog';
+import UserImagesGrid from '@/components/UserImagesGrid';
+import { getCurrentSession } from '@/lib/auth';
+import { getCachedUserCredits } from '@/lib/cache';
 
-const MainApp = () => {
+const MainApp = async () => {
+  const { user } = await getCurrentSession();
+  if (!user) return redirect('/login');
+
+  const creditsLeft = await getCachedUserCredits(user.id);
+
   return (
     <div className="min-h-screen bg-zinc-50">
       <div className="border-b bg-white">
@@ -35,7 +43,7 @@ const MainApp = () => {
             Background Removal
           </h1>
 
-          <UploadImageDialog>
+          <UploadImageDialog creditsLeft={creditsLeft}>
             <Button className="gap-2">
               <Plus className="w-4 h-4" />
               New Image
