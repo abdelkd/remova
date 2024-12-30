@@ -12,14 +12,17 @@ import { UploadImageDialog } from '@/components/UploadImageDialog';
 import UserImagesGrid from '@/components/UserImagesGrid';
 import { getCurrentSession } from '@/lib/auth';
 import { getCachedUserCredits } from '@/lib/cache';
-import { getUserBucket } from '@/server/db';
+import { getBucketName } from '@/server/db';
 
 const MainApp = async () => {
   const { user } = await getCurrentSession();
   if (!user) return redirect('/login');
 
   const creditsLeft = await getCachedUserCredits(user.id);
-  const userBucket = await getUserBucket(user.id);
+  const bucketName = await getBucketName(user.id);
+  if (!bucketName) {
+    console.error('Invalid Bucket Name');
+  }
 
   return (
     <div className="min-h-screen bg-zinc-50">
@@ -45,7 +48,7 @@ const MainApp = async () => {
             Background Removal
           </h1>
 
-          <UploadImageDialog creditsLeft={creditsLeft} userBucket={userBucket}>
+          <UploadImageDialog creditsLeft={creditsLeft} bucketName={bucketName!}>
             <Button className="gap-2">
               <Plus className="w-4 h-4" />
               New Image

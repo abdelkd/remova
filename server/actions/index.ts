@@ -3,13 +3,15 @@
 import argon2 from 'argon2';
 
 import { AuthForm } from '@/types';
-import { getUserBucket, getUserByEmail, registerNewUser } from '@/server/db';
+import { getBucketName, getUserByEmail, registerNewUser } from '@/server/db';
 import {
   createSession,
   generateSessionToken,
   getCurrentSession,
   setSessionTokenCookie,
 } from '@/lib/auth';
+import { createClient } from '../../lib/supabase/server';
+import { cookies } from 'next/headers';
 
 export const loginUser = async ({ email }: AuthForm) => {
   const user = await getUserByEmail(email);
@@ -39,7 +41,12 @@ export const getSignedURL = async (filepath: string) => {
   const { user } = await getCurrentSession();
   if (!user) return null;
 
-  const userBucket = await getUserBucket(user.id);
+  const supabase = createClient(await cookies());
+
+  const bucketName = await getBucketName(user.id);
+  if (!bucketName) return null;
+
+  const userBucket = supabase.storage.from(bucketName);
   if (!userBucket) return null;
 
   return (await userBucket.createSignedUploadUrl(filepath)).data;

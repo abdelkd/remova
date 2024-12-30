@@ -17,19 +17,20 @@ import { useUploadFile } from '@/hooks/use-upload-file';
 
 import type { OnInteractionOutside } from '@/components/ui/types';
 import { getSignedURL } from '@/server/actions';
-import { getUserBucket } from '@/server/db';
+import { createClient } from '@/lib/supabase/client';
 
 type Props = {
   creditsLeft: number;
-  userBucket: Awaited<ReturnType<typeof getUserBucket>>;
+  bucketName: string;
   children: React.ReactNode;
 };
 
 export const UploadImageDialog = ({
-  userBucket,
+  bucketName,
   creditsLeft,
   children,
 }: Props) => {
+  const [supabaseClient] = useState(() => createClient());
   const [dontSave, setDontSave] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
 
@@ -47,12 +48,22 @@ export const UploadImageDialog = ({
     setIsUploading(true);
 
     const filepath = Date.now() + file.name;
-    const data = await getSignedURL(filepath);
-    if (!data) return;
 
-    const { path, token } = data;
-    console.log(await userBucket?.uploadToSignedUrl(path, token, file));
-    setIsUploading(false);
+    try {
+      const data = await getSignedURL(filepath);
+      if (!data) throw new Error('No Signed URL');
+
+      const { path, token } = data;
+      const result = await supabaseClient.storage
+        .from(bucketName)
+        .uploadToSignedUrl(path, token, file);
+
+      if (!result.data || result.error) throw new Error('Failed to upload');
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   return (
