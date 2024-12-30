@@ -10,8 +10,9 @@ import {
   getCurrentSession,
   setSessionTokenCookie,
 } from '@/lib/auth';
-import { createClient } from '../../lib/supabase/server';
+import { createClient } from '@/lib/supabase/server';
 import { cookies } from 'next/headers';
+import { randomUUID } from 'node:crypto';
 
 export const loginUser = async ({ email }: AuthForm) => {
   const user = await getUserByEmail(email);
@@ -28,9 +29,14 @@ export const signupUser = async ({ email, password }: AuthForm) => {
   const user = await getUserByEmail(email);
   if (user.length !== 0) return user;
 
+  const supabase = createClient(await cookies());
+
   try {
+    const bucketId = randomUUID();
     const hashedPassword = await argon2.hash(password);
-    await registerNewUser(email, hashedPassword);
+    await registerNewUser(email, hashedPassword, bucketId);
+    await supabase.storage.createBucket(bucketId);
+
     return null;
   } catch {
     return null;
