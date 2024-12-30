@@ -31,10 +31,9 @@ export const UploadImageDialog = ({
   children,
 }: Props) => {
   const [dontSave, setDontSave] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
 
   const { file, uploadFile, inputElement, base64String } = useUploadFile();
-
-  const isUploading = false;
 
   const onInteractOutside: OnInteractionOutside = (event) => {
     if (isUploading) {
@@ -45,12 +44,14 @@ export const UploadImageDialog = ({
 
   const onUpload = async () => {
     if (!file?.name) return;
+    setIsUploading(true);
 
     const filepath = Date.now() + file.name;
     const { data } = await getSignedURL(filepath);
     console.log(
       await userBucket?.uploadToSignedUrl(data.path, data.token, file),
     );
+    setIsUploading(false);
   };
 
   return (
