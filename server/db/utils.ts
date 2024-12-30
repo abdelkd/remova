@@ -8,3 +8,10 @@ export const getUserByEmail = (email: string) => {
 export const registerNewUser = (email: string, password: string) => {
   return db.insert(userTable).values({ email, password });
 };
+
+export const getUserCredits = async (id: number) => {
+  return db
+    .select({ creditsLeft: userTable.creditsLeft })
+    .from(userTable)
+    .where(eq(userTable.id, id));
+};

@@ -1,10 +1,14 @@
-import { Image as ImageIcon, Plus, Info, CreditCard } from 'lucide-react';
+import { Image as ImageIcon, Plus, Info } from 'lucide-react';
+import { Suspense } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogTrigger } from '@/components/ui/dialog';
-import { BuyCreditsDialog } from '@/components/buy-credits-dialog';
+import { BuyCreditsDialog } from '@/components/BuyCreditsDialog';
 import { UploadImageDialog } from '@/components/upload-image-dialog';
 import UserImagesGrid from '@/components/UserImagesGrid';
+import CreditsIndicator, {
+  CreditsIndicatorSkeleton,
+} from '@/components/CreditsIndicator';
 
 const MainApp = () => {
   const creditsLeft = 43;
@@ -18,12 +22,9 @@ const MainApp = () => {
             <span className="font-semibold text-zinc-900">My Images</span>
           </div>
           <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2 px-3 py-1.5 bg-zinc-100 rounded-full">
-              <CreditCard className="w-4 h-4 text-primary" />
-              <span className="text-sm font-medium text-zinc-900">
-                {creditsLeft} credits left
-              </span>
-            </div>
+            <Suspense fallback={<CreditsIndicatorSkeleton />}>
+              <CreditsIndicator />
+            </Suspense>
 
             <BuyCreditsDialog />
           </div>
