@@ -16,13 +16,20 @@ import { Button } from '@/components/ui/button';
 import { useUploadFile } from '@/hooks/use-upload-file';
 
 import type { OnInteractionOutside } from '@/components/ui/types';
+import { getSignedURL } from '@/server/actions';
+import { getUserBucket } from '@/server/db';
 
 type Props = {
   creditsLeft: number;
+  userBucket: Awaited<ReturnType<typeof getUserBucket>>;
   children: React.ReactNode;
 };
 
-export const UploadImageDialog = ({ creditsLeft, children }: Props) => {
+export const UploadImageDialog = ({
+  userBucket,
+  creditsLeft,
+  children,
+}: Props) => {
   const [dontSave, setDontSave] = useState(false);
 
   const { file, uploadFile, inputElement, base64String } = useUploadFile();
@@ -34,6 +41,16 @@ export const UploadImageDialog = ({ creditsLeft, children }: Props) => {
       event.preventDefault();
       return;
     }
+  };
+
+  const onUpload = async () => {
+    if (!file?.name) return;
+
+    const filepath = Date.now() + file.name;
+    const { data } = await getSignedURL(filepath);
+    console.log(
+      await userBucket?.uploadToSignedUrl(data.path, data.token, file),
+    );
   };
 
   return (
@@ -101,7 +118,10 @@ export const UploadImageDialog = ({ creditsLeft, children }: Props) => {
               </div>
             </div>
 
-            <Button disabled={isUploading || creditsLeft === 0}>
+            <Button
+              disabled={isUploading || creditsLeft === 0 || !file}
+              onClick={onUpload}
+            >
               {isUploading ? 'Processing...' : `Remove Background (1 Credit)`}
             </Button>
           </div>

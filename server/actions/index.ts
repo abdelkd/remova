@@ -3,10 +3,11 @@
 import argon2 from 'argon2';
 
 import { AuthForm } from '@/types';
-import { getUserByEmail, registerNewUser } from '@/server/db';
+import { getUserBucket, getUserByEmail, registerNewUser } from '@/server/db';
 import {
   createSession,
   generateSessionToken,
+  getCurrentSession,
   setSessionTokenCookie,
 } from '@/lib/auth';
 
@@ -32,4 +33,14 @@ export const signupUser = async ({ email, password }: AuthForm) => {
   } catch {
     return null;
   }
+};
+
+export const getSignedURL = async (filepath: string) => {
+  const { user } = await getCurrentSession();
+  if (!user) return null;
+
+  const userBucket = await getUserBucket(user.id);
+  if (!userBucket) return null;
+
+  return await userBucket.createSignedUploadUrl(filepath).data;
 };
