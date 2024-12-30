@@ -47,7 +47,10 @@ export const UploadImageDialog = ({
     setIsUploading(true);
 
     const filepath = Date.now() + file.name;
-    const { path, token } = await getSignedURL(filepath);
+    const data = await getSignedURL(filepath);
+    if (!data) return;
+
+    const { path, token } = data;
     console.log(await userBucket?.uploadToSignedUrl(path, token, file));
     setIsUploading(false);
   };
