@@ -4,8 +4,6 @@ import { eq } from 'drizzle-orm';
 import { cookies } from 'next/headers';
 import { randomUUID } from 'node:crypto';
 
-const supabase = createClient(await cookies());
-
 export const getUserByEmail = (email: string) => {
   return db.select().from(userTable).where(eq(userTable.email, email));
 };
@@ -24,6 +22,7 @@ export const getUserCredits = async (id: number) => {
 };
 
 export const getUserBucket = async (id: number) => {
+  const supabase = createClient(await cookies());
   const result = await db
     .select({ bucketId: userTable.bucketId })
     .from(userTable)
