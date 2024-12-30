@@ -42,5 +42,5 @@ export const getSignedURL = async (filepath: string) => {
   const userBucket = await getUserBucket(user.id);
   if (!userBucket) return null;
 
-  return await userBucket.createSignedUploadUrl(filepath).data;
+  return (await userBucket.createSignedUploadUrl(filepath)).data;
 };
