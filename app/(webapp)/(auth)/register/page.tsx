@@ -22,7 +22,7 @@ import {
   FormControl,
   FormDescription,
   FormMessage,
-  FormRootError
+  FormRootError,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -52,12 +52,12 @@ const SignupPage = () => {
       return;
     }
 
-    setIsSuccess(true);
     loginUser(values)
       .then(() => {
         router.push('/app');
       })
       .catch(() => router.push('/login'));
+    setIsSuccess(true);
   };
 
   return (
@@ -108,20 +108,27 @@ const SignupPage = () => {
                 ) : null}
               </div>
 
-              <Button className="w-full" disabled={form.formState.isSubmitting}>
-                {form.formState.isSubmitting ? (
-                  <>
-                    <LoadingSpinner />
-                    Creating account...
-                  </>
-                ) : (
-                  'Sign Up'
-                )}
-              </Button>
-              <p>
-                Already have an account? <Button variant="link" asChild><Link href="/login" className="px-2">Sign In</Link></Button>
-              </p>
-
+              <div>
+                <Button
+                  className="w-full"
+                  disabled={form.formState.isSubmitting}
+                >
+                  {form.formState.isSubmitting ? (
+                    <>
+                      <LoadingSpinner />
+                      Creating account...
+                    </>
+                  ) : (
+                    'Sign Up'
+                  )}
+                </Button>
+                <p>
+                  Already have an account?{' '}
+                  <Button variant="link" className="p-0" asChild>
+                    <Link href="/login">Sign In</Link>
+                  </Button>
+                </p>
+              </div>
             </form>
           </Form>
         </CardContent>

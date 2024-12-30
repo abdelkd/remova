@@ -102,28 +102,29 @@ const LoginPage = () => {
                 ) : null}
               </div>
 
-              <Button
-                type="submit"
-                className="w-full"
-                disabled={form.formState.isSubmitting}
-              >
-                {form.formState.isSubmitting ? (
-                  <>
-                    <LoadingSpinner />
-                    Loggin in...
-                  </>
-                ) : (
-                  'Sign In'
-                )}
-              </Button>
-              <p>
-                Do not have an account?{' '}
-                <Button variant="link" asChild>
-                  <Link href="/register" className="px-2">
-                    Sign Up
-                  </Link>
+              <div>
+                {' '}
+                <Button
+                  type="submit"
+                  className="w-full"
+                  disabled={form.formState.isSubmitting}
+                >
+                  {form.formState.isSubmitting ? (
+                    <>
+                      <LoadingSpinner />
+                      Loggin in...
+                    </>
+                  ) : (
+                    'Sign In'
+                  )}
                 </Button>
-              </p>
+                <p>
+                  Do not have an account?{' '}
+                  <Button variant="link" className="p-0" asChild>
+                    <Link href="/register">Sign Up</Link>
+                  </Button>
+                </p>
+              </div>
             </form>
           </Form>
         </CardContent>
