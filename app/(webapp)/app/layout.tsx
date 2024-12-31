@@ -18,8 +18,6 @@ export default async function AppLayout({ children }: React.PropsWithChildren) {
     redirect('/login');
   }
 
-  console.log({ user: data.user });
-
   getCachedUserCredits(data.user.id);
 
   return <>{children}</>;

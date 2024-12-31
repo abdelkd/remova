@@ -9,16 +9,16 @@ type RegisterUserParams = {
   id: string;
   email: string;
   password: string;
-  bucketId: string;
+  bucketName: string;
 };
 
 export const registerNewUser = ({
   id,
   email,
   password,
-  bucketId,
+  bucketName,
 }: RegisterUserParams) => {
-  return db.insert(userTable).values({ id, email, password, bucketId });
+  return db.insert(userTable).values({ id, email, password, bucketName });
 };
 
 export const getUserCredits = async (id: string) => {
@@ -26,18 +26,10 @@ export const getUserCredits = async (id: string) => {
     .select({ creditsLeft: userTable.creditsLeft })
     .from(userTable)
     .where(eq(userTable.id, id));
-  console.log({ result });
-  return result[0]?.creditsLeft ?? 10;
+
+  return result[0]?.creditsLeft ?? 0;
 };
 
-export const getBucketName = async (id: string) => {
-  const result = await db
-    .select({ bucketId: userTable.bucketId })
-    .from(userTable)
-    .where(eq(userTable.id, id));
-  if (result.length === 0) return null;
-
-  console.log({ result });
-
-  return result[0].bucketId;
+export const getBucketName = (id: string) => {
+  return `user_${id}`;
 };

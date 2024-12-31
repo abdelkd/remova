@@ -8,7 +8,7 @@ export const userTable = sqliteTable('user', {
   email: text('email').notNull(),
   password: text('password').notNull(),
   creditsLeft: integer('credits_left').notNull().default(0),
-  bucketId: text('bucket_id').notNull().$defaultFn(randomUUID),
+  bucketName: text('bucketName').notNull().$defaultFn(randomUUID),
 });
 
 export const sessionTable = sqliteTable('session', {

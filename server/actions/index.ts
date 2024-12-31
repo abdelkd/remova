@@ -5,8 +5,7 @@ import { revalidatePath } from 'next/cache';
 import type { AuthForm } from '@/types';
 import { createClient } from '@/lib/supabase/server';
 import { cookies } from 'next/headers';
-import { registerNewUser } from '../db';
-import { randomUUID } from 'node:crypto';
+import { getBucketName, registerNewUser } from '../db';
 
 export const loginUser = async ({ email, password }: AuthForm) => {
   const supabase = createClient(await cookies());
@@ -14,18 +13,14 @@ export const loginUser = async ({ email, password }: AuthForm) => {
     email,
     password,
   });
-  console.log({ data, error });
+
   if (!data.user || error) {
     console.error(error);
     return { data, error };
-    // redirect('/error');
   }
-
-  console.log({ data });
 
   revalidatePath('/app', 'layout');
   return { data, error };
-  // redirect('/app');
 };
 
 export const signUpUser = async ({ email, password }: AuthForm) => {
@@ -34,16 +29,21 @@ export const signUpUser = async ({ email, password }: AuthForm) => {
     const { data, error } = await supabase.auth.signUp({ email, password });
     if (!data.user || error) {
       console.error(error);
-      return { data, error };
+      return { data: { user: null }, error: true };
     }
 
-    const bucketId = randomUUID();
-    await registerNewUser({ id: data.user.id, email, password, bucketId });
-    const { data: bucketData, error: bucketError } =
-      await supabase.storage.createBucket(data.user.id);
-    console.log({ data: bucketData, error: bucketError });
+    const bucketName = getBucketName(data.user.id);
+    await registerNewUser({ id: data.user.id, email, password, bucketName });
 
-    return { data: bucketData, error: bucketError };
+    const bucketResult = await supabase.storage.createBucket(bucketName);
+
+    if (bucketResult.error) {
+      console.error(bucketResult.error);
+      await supabase.auth.admin.deleteUser(data.user.id);
+      return { data: { user: null }, error: true };
+    }
+
+    return { data, error };
   } catch (err) {
     console.log(err);
     return { data: { user: null }, error: true };
