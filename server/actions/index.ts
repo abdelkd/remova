@@ -39,6 +39,9 @@ export const signUpUser = async ({ email, password }: AuthForm) => {
 
     const bucketId = randomUUID();
     await registerNewUser({ id: data.user.id, email, password, bucketId });
+    const { data, error } = await supabase.storage.createBucket(data.user.id);
+    console.log({ data, error });
+
     return { data, error };
   } catch (err) {
     console.log(err);
