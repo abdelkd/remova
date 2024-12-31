@@ -47,6 +47,6 @@ export const signUpUser = async ({ email, password }: AuthForm) => {
     return { data, error };
   } catch (err) {
     console.log(err);
-    return { data: null, error: true };
+    return { data: { user: null }, error: true };
   }
 };
