@@ -25,9 +25,9 @@ type Props = {
 };
 
 export const UploadImageDialog = ({ creditsLeft, children }: Props) => {
-  const [] = useState(() => createClient());
+  const [supabase] = useState(() => createClient());
   const [dontSave, setDontSave] = useState(false);
-  const [isUploading] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
 
   const { file, uploadFile, inputElement, base64String } = useUploadFile();
 
@@ -40,25 +40,35 @@ export const UploadImageDialog = ({ creditsLeft, children }: Props) => {
 
   const onUpload = async () => {
     if (!file?.name) return;
-    // setIsUploading(true);
-    //
-    // const filepath = Date.now() + file.name;
-    //
-    // try {
-    //   const data = await getSignedURL(filepath);
-    //   if (!data) throw new Error('No Signed URL');
-    //
-    //   const { path, token } = data;
-    //   const result = await supabaseClient.storage
-    //     .from(bucketName)
-    //     .uploadToSignedUrl(path, token, file);
-    //
-    //   if (!result.data || result.error) throw new Error('Failed to upload');
-    // } catch (err) {
-    //   console.error(err);
-    // } finally {
-    //   setIsUploading(false);
-    // }
+    setIsUploading(true);
+
+    const filepath = Date.now() + file.name;
+
+    try {
+      const {
+        data: { session },
+        error,
+      } = await supabase.auth.getSession();
+      if (!session || !session?.user || error) {
+        throw new Error('Failed to get session');
+      }
+
+      const bucketName = `user_${session?.user.id}`;
+      console.log({ bucketName });
+      const result = supabase.storage.from(bucketName);
+      const { data, error: uploadError } = await result.upload(filepath, file);
+      if (!data || uploadError) {
+        console.log({ data, uploadError });
+        throw new Error('Failed to upload file');
+      }
+
+      const { id, path, fullPath } = data;
+      console.log({ id, path, fullPath });
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   return (
@@ -127,7 +137,7 @@ export const UploadImageDialog = ({ creditsLeft, children }: Props) => {
             </div>
 
             <Button
-              disabled={isUploading || creditsLeft === 0 || file === undefined}
+              disabled={isUploading || creditsLeft === 0 || !file}
               onClick={onUpload}
             >
               {isUploading ? 'Processing...' : `Remove Background (1 Credit)`}
