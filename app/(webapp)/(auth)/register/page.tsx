@@ -42,8 +42,11 @@ const SignupPage = () => {
   });
 
   const onSubmit = async (values: AuthForm) => {
-    const { data, error } = await signUpUser(values);
-    if (!data.user || error) {
+    const {
+      data: { user },
+      error,
+    } = await signUpUser(values);
+    if (!user || error) {
       form.setError('root', {
         message: 'User already exists, please sign in.',
       });
