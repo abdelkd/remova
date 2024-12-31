@@ -4,7 +4,7 @@ import type { InferSelectModel } from 'drizzle-orm';
 import { randomUUID } from 'node:crypto';
 
 export const userTable = sqliteTable('user', {
-  id: integer('id').primaryKey(),
+  id: text('id').primaryKey(),
   email: text('email').notNull(),
   password: text('password').notNull(),
   creditsLeft: integer('credits_left').notNull().default(0),

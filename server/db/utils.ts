@@ -6,20 +6,22 @@ export const getUserByEmail = (email: string) => {
 };
 
 type RegisterUserParams = {
+  id: string;
   email: string;
   password: string;
   bucketId: string;
 };
 
 export const registerNewUser = ({
+  id,
   email,
   password,
   bucketId,
 }: RegisterUserParams) => {
-  return db.insert(userTable).values({ email, password, bucketId });
+  return db.insert(userTable).values({ id, email, password, bucketId });
 };
 
-export const getUserCredits = async (id: number) => {
+export const getUserCredits = async (id: string) => {
   const result = await db
     .select({ creditsLeft: userTable.creditsLeft })
     .from(userTable)
@@ -27,7 +29,7 @@ export const getUserCredits = async (id: number) => {
   return result[0].creditsLeft;
 };
 
-export const getBucketName = async (id: number) => {
+export const getBucketName = async (id: string) => {
   const result = await db
     .select({ bucketId: userTable.bucketId })
     .from(userTable)

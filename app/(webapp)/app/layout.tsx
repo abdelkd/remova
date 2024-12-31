@@ -1,7 +1,8 @@
-import { getCurrentSession } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 import type { Metadata } from 'next';
 import { getCachedUserCredits } from '@/lib/cache';
+import { cookies } from 'next/headers';
+import { createClient } from '@/lib/supabase/server';
 
 export const metadata: Metadata = {
   title: 'Your Workspace – Remove Backgrounds & Create Magic with Extract',
@@ -10,10 +11,14 @@ export const metadata: Metadata = {
 };
 
 export default async function AppLayout({ children }: React.PropsWithChildren) {
-  const { user } = await getCurrentSession();
-  if (!user) return redirect('/login');
+  const supabase = createClient(await cookies());
 
-  getCachedUserCredits(user.id);
+  const { data, error } = await supabase.auth.getUser();
+  if (!data.user || error) {
+    redirect('/login');
+  }
+
+  getCachedUserCredits(data.user.id);
 
   return <>{children}</>;
 }

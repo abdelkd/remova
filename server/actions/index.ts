@@ -1,65 +1,28 @@
 'use server';
 
-import argon2 from 'argon2';
+import { revalidatePath } from 'next/cache';
+import { redirect } from 'next/navigation';
 
-import { AuthForm } from '@/types';
-import { getBucketName, getUserByEmail, registerNewUser } from '@/server/db';
-import {
-  createSession,
-  generateSessionToken,
-  getCurrentSession,
-  setSessionTokenCookie,
-} from '@/lib/auth';
+import type { AuthForm } from '@/types';
 import { createClient } from '@/lib/supabase/server';
 import { cookies } from 'next/headers';
+import { registerNewUser } from '../db';
 import { randomUUID } from 'node:crypto';
 
-export const loginUser = async ({ email }: AuthForm) => {
-  const user = await getUserByEmail(email);
-  if (user.length === 0) return null;
-
-  const token = generateSessionToken();
-  const session = await createSession(token, user[0].id);
-  await setSessionTokenCookie(token, session.expiresAt);
-
-  return session;
-};
-
-export const signupUser = async ({ email, password }: AuthForm) => {
-  const user = await getUserByEmail(email);
-  if (user.length !== 0) return user;
-
+export const loginUser = async ({ email, password }: AuthForm) => {
   const supabase = createClient(await cookies());
-
-  try {
-    const bucketId = randomUUID();
-    const hashedPassword = await argon2.hash(password);
-
-    await registerNewUser({ email, password: hashedPassword, bucketId });
-    const { data, error } = await supabase.storage.createBucket(bucketId);
-    if (error) {
-      console.error(error);
-    }
-
-    console.log({ data });
-
-    return null;
-  } catch {
-    return null;
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  });
+  if (error) {
+    redirect('/error');
   }
-};
 
-export const getSignedURL = async (filepath: string) => {
-  const { user } = await getCurrentSession();
-  if (!user) return null;
+  const { id } = data.user;
+  const bucketId = randomUUID();
+  await registerNewUser({ id, email, password, bucketId });
 
-  const supabase = createClient(await cookies());
-
-  const bucketName = await getBucketName(user.id);
-  if (!bucketName) return null;
-
-  const userBucket = supabase.storage.from(bucketName);
-  if (!userBucket) return null;
-
-  return (await userBucket.createSignedUploadUrl(filepath)).data;
+  revalidatePath('/app', 'layout');
+  redirect('/app');
 };
