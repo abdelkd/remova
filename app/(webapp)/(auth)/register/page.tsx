@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
@@ -29,12 +28,12 @@ import { Button } from '@/components/ui/button';
 import LoadingSpinner from '@/components/loading-spinner';
 import { authFormSchema } from '@/schemas';
 
-import { loginUser, signupUser } from '@/server/actions';
+// import { loginUser } from '@/server/actions';
 import type { AuthForm } from '@/types';
 
 const SignupPage = () => {
-  const router = useRouter();
-  const [isSuccess, setIsSuccess] = useState(false);
+  // const router = useRouter();
+  const [isSuccess] = useState(false);
   const form = useForm<AuthForm>({
     resolver: zodResolver(authFormSchema),
     defaultValues: {
@@ -43,21 +42,21 @@ const SignupPage = () => {
     },
   });
 
-  const onSubmit = async (values: AuthForm) => {
-    const user = await signupUser(values);
-    if (user) {
-      form.setError('root', {
-        message: 'User already exists, please sign in.',
-      });
-      return;
-    }
-
-    loginUser(values)
-      .then(() => {
-        router.push('/app');
-      })
-      .catch(() => router.push('/login'));
-    setIsSuccess(true);
+  const onSubmit = async () => {
+    // const user = await signupUser(values);
+    // if (user) {
+    //   form.setError('root', {
+    //     message: 'User already exists, please sign in.',
+    //   });
+    //   return;
+    // }
+    //
+    // loginUser(values)
+    //   .then(() => {
+    //     router.push('/app');
+    //   })
+    //   .catch(() => router.push('/login'));
+    // setIsSuccess(true);
   };
 
   return (
