@@ -16,7 +16,7 @@ import { Button } from '@/components/ui/button';
 import { useUploadFile } from '@/hooks/use-upload-file';
 
 import type { OnInteractionOutside } from '@/components/ui/types';
-import { getSignedURL } from '@/server/actions';
+// import { getSignedURL } from '@/server/actions';
 import { createClient } from '@/lib/supabase/client';
 
 type Props = {
@@ -25,14 +25,10 @@ type Props = {
   children: React.ReactNode;
 };
 
-export const UploadImageDialog = ({
-  bucketName,
-  creditsLeft,
-  children,
-}: Props) => {
-  const [supabaseClient] = useState(() => createClient());
+export const UploadImageDialog = ({ creditsLeft, children }: Props) => {
+  const [] = useState(() => createClient());
   const [dontSave, setDontSave] = useState(false);
-  const [isUploading, setIsUploading] = useState(false);
+  const [isUploading] = useState(false);
 
   const { file, uploadFile, inputElement, base64String } = useUploadFile();
 
@@ -45,25 +41,25 @@ export const UploadImageDialog = ({
 
   const onUpload = async () => {
     if (!file?.name) return;
-    setIsUploading(true);
-
-    const filepath = Date.now() + file.name;
-
-    try {
-      const data = await getSignedURL(filepath);
-      if (!data) throw new Error('No Signed URL');
-
-      const { path, token } = data;
-      const result = await supabaseClient.storage
-        .from(bucketName)
-        .uploadToSignedUrl(path, token, file);
-
-      if (!result.data || result.error) throw new Error('Failed to upload');
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setIsUploading(false);
-    }
+    // setIsUploading(true);
+    //
+    // const filepath = Date.now() + file.name;
+    //
+    // try {
+    //   const data = await getSignedURL(filepath);
+    //   if (!data) throw new Error('No Signed URL');
+    //
+    //   const { path, token } = data;
+    //   const result = await supabaseClient.storage
+    //     .from(bucketName)
+    //     .uploadToSignedUrl(path, token, file);
+    //
+    //   if (!result.data || result.error) throw new Error('Failed to upload');
+    // } catch (err) {
+    //   console.error(err);
+    // } finally {
+    //   setIsUploading(false);
+    // }
   };
 
   return (
