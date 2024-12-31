@@ -36,7 +36,12 @@ export const signupUser = async ({ email, password }: AuthForm) => {
     const hashedPassword = await argon2.hash(password);
 
     await registerNewUser({ email, password: hashedPassword, bucketId });
-    await supabase.storage.createBucket(bucketId);
+    const { data, error } = await supabase.storage.createBucket(bucketId);
+    if (error) {
+      console.error(error);
+    }
+
+    console.log({ data });
 
     return null;
   } catch {
