@@ -10,13 +10,9 @@ import { randomUUID } from 'node:crypto';
 
 export const loginUser = async ({ email, password }: AuthForm) => {
   const supabase = createClient(await cookies());
-  const bucketId = randomUUID();
   const { data, error } = await supabase.auth.signInWithPassword({
     email,
     password,
-    options: {
-      data: { bucketId },
-    },
   });
   console.log({ data, error });
   if (error) {
