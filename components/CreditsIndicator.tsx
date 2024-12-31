@@ -2,8 +2,8 @@ import { CreditCard } from 'lucide-react';
 import { redirect } from 'next/navigation';
 
 import { Skeleton } from '@/components/ui/skeleton';
-import { getCurrentSession } from '@/lib/auth';
 import { getCachedUserCredits } from '@/lib/cache';
+import { getUser } from '@/lib/supabase/server';
 
 export const CreditsIndicatorSkeleton = () => {
   return (
@@ -12,8 +12,11 @@ export const CreditsIndicatorSkeleton = () => {
 };
 
 const CreditsIndicator = async () => {
-  const { user } = await getCurrentSession();
-  if (!user) return redirect('/login');
+  const {
+    data: { user },
+    error,
+  } = await getUser();
+  if (!user || error) return redirect('/login');
 
   const creditsLeft = await getCachedUserCredits(user.id);
 

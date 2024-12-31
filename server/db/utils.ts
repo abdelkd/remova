@@ -26,7 +26,8 @@ export const getUserCredits = async (id: string) => {
     .select({ creditsLeft: userTable.creditsLeft })
     .from(userTable)
     .where(eq(userTable.id, id));
-  return result[0].creditsLeft;
+  console.log({ result });
+  return result[0]?.creditsLeft ?? 10;
 };
 
 export const getBucketName = async (id: string) => {
@@ -35,6 +36,8 @@ export const getBucketName = async (id: string) => {
     .from(userTable)
     .where(eq(userTable.id, id));
   if (result.length === 0) return null;
+
+  console.log({ result });
 
   return result[0].bucketId;
 };

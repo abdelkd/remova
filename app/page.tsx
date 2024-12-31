@@ -4,13 +4,19 @@ import { Camera, Wand2, ArrowRight, Image as ImageIcon } from 'lucide-react';
 
 import { Card, CardHeader, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { getCurrentSession } from '@/lib/auth';
+import { getUser } from '@/lib/supabase/server';
+import { redirect } from 'next/navigation';
 
 import image1 from '@/assets/1.webp';
 import image2 from '@/assets/2.webp';
 
 const HeroSection = async () => {
-  const { user } = await getCurrentSession();
+  const {
+    data: { user },
+    error,
+  } = await getUser();
+  if (!user || error) return redirect('/login');
+
   return (
     <div className="w-full max-w-6xl mx-auto p-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center min-h-[80vh]">
@@ -193,7 +199,11 @@ const PricingSection = () => {
 };
 
 const FeatureSection = async () => {
-  const { user } = await getCurrentSession();
+  const {
+    data: { user },
+    error,
+  } = await getUser();
+  if (!user || error) return redirect('/login');
 
   return (
     <div className="w-full max-w-6xl mx-auto p-6">

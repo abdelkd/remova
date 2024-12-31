@@ -3,13 +3,16 @@ import { redirect } from 'next/navigation';
 
 import { Button } from '@/components/ui/button';
 import { UploadImageDialog } from '@/components/UploadImageDialog';
-import { getCurrentSession } from '@/lib/auth';
+import { getUser } from '@/lib/supabase/server';
 import { getCachedUserCredits } from '@/lib/cache';
 import { getBucketName } from '@/server/db';
 
 const UserImagesGrid = async () => {
-  const { user } = await getCurrentSession();
-  if (!user) return redirect('/login');
+  const {
+    data: { user },
+    error,
+  } = await getUser();
+  if (!user || error) return redirect('/login');
 
   const creditsLeft = await getCachedUserCredits(user.id);
   const bucketName = await getBucketName(user.id);

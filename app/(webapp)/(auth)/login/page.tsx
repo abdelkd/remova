@@ -44,8 +44,11 @@ const LoginPage = () => {
   });
 
   const onSubmit = async (values: AuthForm) => {
-    const user = await loginUser(values);
-    if (!user) {
+    const {
+      data: { user },
+      error,
+    } = await loginUser(values);
+    if (!user || error) {
       form.setError('root', { message: 'Invalid login credentials.' });
       return;
     }
