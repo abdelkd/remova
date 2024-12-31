@@ -43,7 +43,7 @@ const SignupPage = () => {
 
   const onSubmit = async (values: AuthForm) => {
     const { data, error } = await signUpUser(values);
-    if (!data?.user || error) {
+    if (!data || error) {
       form.setError('root', {
         message: 'User already exists, please sign in.',
       });
