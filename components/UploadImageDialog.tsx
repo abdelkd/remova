@@ -16,7 +16,6 @@ import { Button } from '@/components/ui/button';
 import { useUploadFile } from '@/hooks/use-upload-file';
 
 import type { OnInteractionOutside } from '@/components/ui/types';
-// import { getSignedURL } from '@/server/actions';
 import { createClient } from '@/lib/supabase/client';
 
 type Props = {
@@ -80,7 +79,7 @@ export const UploadImageDialog = ({ creditsLeft, children }: Props) => {
                 <Image
                   src={base64String!}
                   alt="preview image"
-                  className="max-w-md w-full h-auto"
+                  className="max-w-md max-h-md w-full h-auto"
                   width={550}
                   height={550}
                 />
