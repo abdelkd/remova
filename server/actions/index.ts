@@ -49,3 +49,47 @@ export const signUpUser = async ({ email, password }: AuthForm) => {
     return { data: { user: null }, error: true };
   }
 };
+
+type ProcessImageArgs = {
+  filename: string;
+  bucketName: string;
+  path: string;
+  token: string;
+  originalImageUrl: string;
+};
+
+export const processImage = async ({
+  path,
+  token,
+  filename,
+  bucketName,
+  originalImageUrl,
+}: ProcessImageArgs) => {
+  const supabase = createClient(await cookies());
+  const body = JSON.stringify({
+    source_url: originalImageUrl,
+  });
+
+  let isError = false;
+
+  const file = await fetch(`${process.env.COLAB}/process`, {
+    body,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+  })
+    .then((r) => r.blob())
+    .then((blob) => new File([blob], filename, { type: blob.type }))
+    .catch(() => {
+      isError = true;
+    });
+
+  if (!file || isError) return { error: 'Empty response' };
+
+  const bucket = supabase.storage.from(bucketName);
+  const { data, error } = await bucket.uploadToSignedUrl(path, token, file);
+  if (!data || error) return { error: 'Failed to upload' };
+
+  console.log('DEBUG', { data });
+
+  return { error: null };
+};

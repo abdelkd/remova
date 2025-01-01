@@ -17,6 +17,7 @@ import { useUploadFile } from '@/hooks/use-upload-file';
 
 import type { OnInteractionOutside } from '@/components/ui/types';
 import { createClient } from '@/lib/supabase/client';
+import { processImage } from '../server/actions';
 
 type Props = {
   creditsLeft: number;
@@ -54,13 +55,44 @@ export const UploadImageDialog = ({ creditsLeft, children }: Props) => {
       }
 
       const bucketName = `user_${session?.user.id}`;
-      console.log({ bucketName });
-      const result = supabase.storage.from(bucketName);
-      const { data, error: uploadError } = await result.upload(filepath, file);
+      const bucket = supabase.storage.from(bucketName);
+      const { data, error: uploadError } = await bucket.upload(filepath, file);
       if (!data || uploadError) {
         console.log({ data, uploadError });
         throw new Error('Failed to upload file');
       }
+
+      // Get presigned url
+      const { data: originalSignedUrl, error: signedUrlError } =
+        await bucket.createSignedUrl(filepath, 1000 * 600);
+      if (!originalSignedUrl || signedUrlError) {
+        console.log(signedUrlError);
+        throw new Error('Failed to get presigned Url');
+      }
+
+      const processedImage = Date.now() + file.name;
+      const { data: signedUploadData, error: signedUploadError } =
+        await bucket.createSignedUploadUrl(processedImage);
+      if (signedUploadError) {
+        throw new Error('Failed to create upload Url');
+      }
+
+      // send it to action
+      console.log(originalSignedUrl.signedUrl);
+      const { error: processError } = await processImage({
+        filename: processedImage,
+        path: signedUploadData.path,
+        token: signedUploadData.token,
+        bucketName,
+        originalImageUrl: originalSignedUrl.signedUrl,
+      });
+
+      if (processError) {
+        console.log(processError);
+        throw new Error(processError);
+      }
+
+      // receive path of new file
 
       const { id, path, fullPath } = data;
       console.log({ id, path, fullPath });
