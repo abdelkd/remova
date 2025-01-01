@@ -75,7 +75,10 @@ export const processImage = async ({
   const file = await fetch(`${process.env.COLAB}/process`, {
     body,
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      'ngrok-skip-browser-warning': 1,
+    },
   })
     .then((r) => r.blob())
     .then((blob) => new File([blob], filename, { type: blob.type }))
