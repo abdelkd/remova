@@ -7,7 +7,7 @@ import { createClient } from '@/lib/supabase/server';
 import { cookies } from 'next/headers';
 import { getBucketName, registerNewUser } from '../db';
 import { env } from '@/lib/env/server';
-import { Client } from '@gradio/client';
+import { removeBgGradio, removeBgReplicate } from '@/lib/bgService';
 
 export const loginUser = async ({ email, password }: AuthForm) => {
   const supabase = createClient(await cookies());
@@ -61,41 +61,26 @@ type ProcessImageArgs = {
 };
 
 export const processImage = async ({
+  filename,
   path,
   token,
   bucketName,
   originalImageUrl,
 }: ProcessImageArgs) => {
-  console.log('DEBUG', 'createSupabaseClient');
   const supabase = createClient(await cookies());
-  console.log('DEBUG', 'createSupabaseClient', supabase);
-
-  console.log('DEBUG', 'connect to gradio');
-  const client = await Client.connect(env.GRADIO_API_URL);
-  console.log('DEBUG', 'connect to gradio', client);
-
-  console.log('DEBUG', 'predict gradio');
-  const result = await client.predict('/process_image_1', {
-    image_source: originalImageUrl,
-  });
-  console.log('DEBUG', 'predict gradio', result);
-
-  console.log('DEBUG', 'get bucket');
   const bucket = supabase.storage.from(bucketName);
-  console.log('DEBUG', 'get bucket', bucket);
 
-  console.log('DEBUG', 'uploadToSignedUrl');
+  const processedImage = !!env.USE_GRADIO
+    ? await removeBgGradio(originalImageUrl, filename)
+    : await removeBgReplicate(originalImageUrl, filename);
+  if (!processedImage) return { error: 'Failed to process' };
 
-  // @ts-expect-error hdhdveuv
-  const p = await fetch(result.data[0].url).then((r) => r.blob());
-
-  // @ts-expect-error tjdjdhshs
-  const f = new File([p], path.split('/').at(-1), { type: 'image/png' });
-  const { data, error } = await bucket.uploadToSignedUrl(path, token, f);
-  console.log('DEBUG', 'uploadToSignedUrl', { data, error });
+  const { data, error } = await bucket.uploadToSignedUrl(
+    path,
+    token,
+    processedImage,
+  );
   if (!data || error) return { error: 'Failed to upload' };
-
-  console.log('DEBUG', { data });
 
   return { error: null };
 };

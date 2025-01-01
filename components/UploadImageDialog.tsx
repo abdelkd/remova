@@ -12,12 +12,10 @@ import {
 } from '@/components/ui/dialog';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
-
 import { useUploadFile } from '@/hooks/use-upload-file';
-
 import type { OnInteractionOutside } from '@/components/ui/types';
 import { createClient } from '@/lib/supabase/client';
-import { processImage } from '../server/actions';
+import { processImage } from '@/server/actions';
 
 type Props = {
   creditsLeft: number;
@@ -25,10 +23,64 @@ type Props = {
   children: React.ReactNode;
 };
 
+type UploadImagePlaceholderProps = {
+  uploadFile: ReturnType<typeof useUploadFile>['uploadFile'];
+  isUploading: boolean;
+};
+
+const UploadImagePlaceholder = ({
+  uploadFile,
+  isUploading,
+}: UploadImagePlaceholderProps) => {
+  return (
+    <>
+      <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+        <Upload className="w-6 h-6 text-primary" />
+      </div>
+      <div className="text-center">
+        <p className="text-sm font-medium text-zinc-900">
+          Click to upload or drag and drop
+        </p>
+        <p className="text-sm text-zinc-500">Up to 15MB per image</p>
+      </div>
+      <Button variant="outline" onClick={uploadFile} disabled={isUploading}>
+        {isUploading ? 'Uploading...' : 'Select File'}
+      </Button>
+    </>
+  );
+};
+
+const PreviewImage = ({
+  previewProcessedImage,
+  previewOriginalImage,
+}: {
+  previewProcessedImage: string;
+  previewOriginalImage: string;
+}) => {
+  return previewProcessedImage === '' ? (
+    <Image
+      src={previewOriginalImage!}
+      alt="preview image"
+      className="max-w-md max-h-md w-full h-auto"
+      width={550}
+      height={550}
+    />
+  ) : (
+    <Image
+      src={previewProcessedImage!}
+      alt="preview image"
+      className="max-w-md max-h-md w-full h-auto"
+      width={550}
+      height={550}
+    />
+  );
+};
+
 export const UploadImageDialog = ({ children }: Props) => {
   const [supabase] = useState(() => createClient());
   const [dontSave, setDontSave] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [previewProcessedImage, setPreviewProcessedImage] = useState('');
 
   const { file, uploadFile, inputElement, base64String } = useUploadFile();
 
@@ -70,7 +122,7 @@ export const UploadImageDialog = ({ children }: Props) => {
         throw new Error('Failed to get presigned Url');
       }
 
-      const processedImage = Date.now() + file.name;
+      const processedImage = Date.now() + file.name + '.png';
       const { data: signedUploadData, error: signedUploadError } =
         await bucket.createSignedUploadUrl(processedImage);
       if (signedUploadError) {
@@ -78,7 +130,6 @@ export const UploadImageDialog = ({ children }: Props) => {
       }
 
       // send it to action
-      console.log(originalSignedUrl.signedUrl);
       const { error: processError } = await processImage({
         filename: processedImage,
         path: signedUploadData.path,
@@ -87,15 +138,20 @@ export const UploadImageDialog = ({ children }: Props) => {
         originalImageUrl: originalSignedUrl.signedUrl,
       });
 
-      if (processError) {
+      if (processError !== null) {
         console.log(processError);
         throw new Error(processError);
       }
 
-      // receive path of new file
+      const processedImageUrl = await bucket.createSignedUrl(
+        processedImage,
+        60 * 10,
+      );
+      if (processedImageUrl.error) {
+        throw new Error('Failed to get processed image');
+      }
 
-      const { id, path, fullPath } = data;
-      console.log({ id, path, fullPath });
+      setPreviewProcessedImage(processedImageUrl.data.signedUrl);
     } catch (err) {
       console.error(err);
     } finally {
@@ -118,34 +174,15 @@ export const UploadImageDialog = ({ children }: Props) => {
           <div className="grid gap-6">
             <div className="flex flex-col items-center gap-4 p-6 border-2 border-dashed border-zinc-200 rounded-lg bg-zinc-50">
               {file ? (
-                <Image
-                  src={base64String!}
-                  alt="preview image"
-                  className="max-w-md max-h-md w-full h-auto"
-                  width={550}
-                  height={550}
+                <PreviewImage
+                  previewProcessedImage={previewProcessedImage}
+                  previewOriginalImage={base64String!}
                 />
               ) : (
-                <>
-                  <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                    <Upload className="w-6 h-6 text-primary" />
-                  </div>
-                  <div className="text-center">
-                    <p className="text-sm font-medium text-zinc-900">
-                      Click to upload or drag and drop
-                    </p>
-                    <p className="text-sm text-zinc-500">
-                      Up to 15MB per image
-                    </p>
-                  </div>
-                  <Button
-                    variant="outline"
-                    onClick={uploadFile}
-                    disabled={isUploading}
-                  >
-                    {isUploading ? 'Uploading...' : 'Select File'}
-                  </Button>
-                </>
+                <UploadImagePlaceholder
+                  uploadFile={uploadFile}
+                  isUploading={isUploading}
+                />
               )}
             </div>
 
