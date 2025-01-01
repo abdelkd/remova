@@ -16,6 +16,7 @@ import { useUploadFile } from '@/hooks/use-upload-file';
 import type { OnInteractionOutside } from '@/components/ui/types';
 import { createClient } from '@/lib/supabase/client';
 import { processImage } from '@/server/actions';
+import { useToast } from '@/hooks/use-toast';
 
 type Props = {
   creditsLeft: number;
@@ -77,6 +78,8 @@ const PreviewImage = ({
 };
 
 export const UploadImageDialog = ({ children }: Props) => {
+  const { toast } = useToast();
+
   const [supabase] = useState(() => createClient());
   const [dontSave, setDontSave] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
@@ -103,6 +106,11 @@ export const UploadImageDialog = ({ children }: Props) => {
         error,
       } = await supabase.auth.getSession();
       if (!session || !session?.user || error) {
+        toast({
+          title: 'Oh! Something went wrong',
+          description: 'There was problem with your session',
+          variant: 'destructive',
+        });
         throw new Error('Failed to get session');
       }
 
@@ -111,6 +119,11 @@ export const UploadImageDialog = ({ children }: Props) => {
       const { data, error: uploadError } = await bucket.upload(filepath, file);
       if (!data || uploadError) {
         console.log({ data, uploadError });
+        toast({
+          title: 'Oh! Something went wrong',
+          description: "Could't upload file.",
+          variant: 'destructive',
+        });
         throw new Error('Failed to upload file');
       }
 
@@ -119,6 +132,10 @@ export const UploadImageDialog = ({ children }: Props) => {
         await bucket.createSignedUrl(filepath, 1000 * 600);
       if (!originalSignedUrl || signedUrlError) {
         console.log(signedUrlError);
+        toast({
+          description: 'Oh! Something went wrong',
+          variant: 'destructive',
+        });
         throw new Error('Failed to get presigned Url');
       }
 
@@ -126,6 +143,10 @@ export const UploadImageDialog = ({ children }: Props) => {
       const { data: signedUploadData, error: signedUploadError } =
         await bucket.createSignedUploadUrl(processedImage);
       if (signedUploadError) {
+        toast({
+          description: 'Oh! Something went wrong',
+          variant: 'destructive',
+        });
         throw new Error('Failed to create upload Url');
       }
 
@@ -139,7 +160,11 @@ export const UploadImageDialog = ({ children }: Props) => {
       });
 
       if (processError !== null) {
-        console.log(processError);
+        toast({
+          title: 'Oh! Something went wrong',
+          description: 'There was problem with our service.',
+          variant: 'destructive',
+        });
         throw new Error(processError);
       }
 
@@ -148,6 +173,11 @@ export const UploadImageDialog = ({ children }: Props) => {
         60 * 10,
       );
       if (processedImageUrl.error) {
+        toast({
+          title: 'Oh! Something went wrong',
+          description: 'There was problem with our service',
+          variant: 'destructive',
+        });
         throw new Error('Failed to get processed image');
       }
 
