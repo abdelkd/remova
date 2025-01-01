@@ -81,6 +81,10 @@ export const processImage = async ({
       'ngrok-skip-browser-warning': '1',
     },
   })
+    .then((r) => {
+      console.log(r.ok);
+      return r;
+    })
     .then((r) => r.blob())
     .then((blob) => new File([blob], filename, { type: blob.type }))
     .catch(() => {
