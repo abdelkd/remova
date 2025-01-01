@@ -85,11 +85,13 @@ export const processImage = async ({
   console.log('DEBUG', 'get bucket', bucket);
 
   console.log('DEBUG', 'uploadToSignedUrl');
-  const { data, error } = await bucket.uploadToSignedUrl(
-    path,
-    token,
-    result.data as File,
-  );
+
+  // @ts-expect-error hdhdveuv
+  const p = await fetch(result.data[0].url).then((r) => r.blob());
+
+  // @ts-expect-error tjdjdhshs
+  const f = new File([p], path.split('/').at(-1), { type: 'image/png' });
+  const { data, error } = await bucket.uploadToSignedUrl(path, token, f);
   console.log('DEBUG', 'uploadToSignedUrl', { data, error });
   if (!data || error) return { error: 'Failed to upload' };
 
