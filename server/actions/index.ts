@@ -9,6 +9,8 @@ import { getBucketName, registerNewUser } from '../db';
 import { env } from '@/lib/env/server';
 import { removeBgGradio, removeBgReplicate } from '@/lib/bgService';
 
+export const maxDuration = 60;
+
 export const loginUser = async ({ email, password }: AuthForm) => {
   const supabase = createClient(await cookies());
   const { data, error } = await supabase.auth.signInWithPassword({
