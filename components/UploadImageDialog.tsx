@@ -152,7 +152,6 @@ export const UploadImageDialog = ({ children }: Props) => {
 
       // send it to action
       const { error: processError } = await processImage({
-        filename: processedImage,
         path: signedUploadData.path,
         token: signedUploadData.token,
         bucketName,
