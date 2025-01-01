@@ -78,7 +78,7 @@ export const processImage = async ({
     headers: {
       'User-Agent': 'pew',
       'Content-Type': 'application/json',
-      'ngrok-skip-browser-warning': 1,
+      'ngrok-skip-browser-warning': '1',
     },
   })
     .then((r) => r.blob())
