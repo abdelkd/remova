@@ -75,7 +75,7 @@ export const processImage = async ({
   console.log('DEBUG', 'connect to gradio', client);
 
   console.log('DEBUG', 'predict gradio');
-  const result = await client.predict('/predit_image_1', {
+  const result = await client.predict('/process_image_1', {
     image_source: originalImageUrl,
   });
   console.log('DEBUG', 'predict gradio', result);
