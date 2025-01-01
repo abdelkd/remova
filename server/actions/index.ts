@@ -83,7 +83,8 @@ export const processImage = async ({
       isError = true;
     });
 
-  if (!file || isError) return { error: 'Empty response' };
+  if (isError) return { error: 'Something went wrong' };
+  if (!file) return { error: 'Empty Response' };
 
   const bucket = supabase.storage.from(bucketName);
   const { data, error } = await bucket.uploadToSignedUrl(path, token, file);
