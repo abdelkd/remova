@@ -6,6 +6,8 @@ import type { AuthForm } from '@/types';
 import { createClient } from '@/lib/supabase/server';
 import { cookies } from 'next/headers';
 import { getBucketName, registerNewUser } from '../db';
+import { env } from '@/lib/env/server';
+import { Client } from '@gradio/client';
 
 export const loginUser = async ({ email, password }: AuthForm) => {
   const supabase = createClient(await cookies());
@@ -61,41 +63,22 @@ type ProcessImageArgs = {
 export const processImage = async ({
   path,
   token,
-  filename,
   bucketName,
   originalImageUrl,
 }: ProcessImageArgs) => {
   const supabase = createClient(await cookies());
-  const body = JSON.stringify({
-    source_url: originalImageUrl,
+  const client = await Client.connect(env.GRADIO_API_URL);
+  const result = await client.predict('/predit_image_1', {
+    image_source: originalImageUrl,
   });
 
-  let isError = false;
-
-  const file = await fetch(`${process.env.COLAB}/process`, {
-    body,
-    method: 'POST',
-    headers: {
-      'User-Agent': 'pew',
-      'Content-Type': 'application/json',
-      'ngrok-skip-browser-warning': '1',
-    },
-  })
-    .then((r) => {
-      console.log(r.ok);
-      return r;
-    })
-    .then((r) => r.blob())
-    .then((blob) => new File([blob], filename, { type: blob.type }))
-    .catch(() => {
-      isError = true;
-    });
-
-  if (isError) return { error: 'Something went wrong' };
-  if (!file) return { error: 'Empty Response' };
-
   const bucket = supabase.storage.from(bucketName);
-  const { data, error } = await bucket.uploadToSignedUrl(path, token, file);
+
+  const { data, error } = await bucket.uploadToSignedUrl(
+    path,
+    token,
+    result.data as File,
+  );
   if (!data || error) return { error: 'Failed to upload' };
 
   console.log('DEBUG', { data });

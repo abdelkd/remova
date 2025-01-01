@@ -3,6 +3,7 @@ import { z } from 'zod';
 
 export const env = createEnv({
   server: {
+    GRADIO_API_URL: z.string().url(),
     TURSO_AUTH_TOKEN: z.string().min(1),
     TURSO_DATABASE_URL: z.string().url(),
     SUPABASE_URL: z.string().url(),
