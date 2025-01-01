@@ -4,6 +4,8 @@ import { getCachedUserCredits } from '@/lib/cache';
 import { cookies } from 'next/headers';
 import { createClient } from '@/lib/supabase/server';
 
+export const maxDuration = 60;
+
 export const metadata: Metadata = {
   title: 'Your Workspace – Remove Backgrounds & Create Magic with Extract',
   description:

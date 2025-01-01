@@ -1,5 +1,4 @@
 'use server';
-
 import { revalidatePath } from 'next/cache';
 
 import type { AuthForm } from '@/types';
@@ -8,8 +7,6 @@ import { cookies } from 'next/headers';
 import { getBucketName, reduceUserCredit, registerNewUser } from '../db';
 import { env } from '@/lib/env/server';
 import { removeBgGradio, removeBgReplicate } from '@/lib/services';
-
-export const maxDuration = 60;
 
 export const loginUser = async ({ email, password }: AuthForm) => {
   const supabase = createClient(await cookies());
