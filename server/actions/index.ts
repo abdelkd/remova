@@ -76,6 +76,7 @@ export const processImage = async ({
     body,
     method: 'POST',
     headers: {
+      'User-Agent': 'pew',
       'Content-Type': 'application/json',
       'ngrok-skip-browser-warning': 1,
     },
