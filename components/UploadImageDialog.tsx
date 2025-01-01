@@ -29,6 +29,7 @@ export const UploadImageDialog = ({ creditsLeft, children }: Props) => {
   const [supabase] = useState(() => createClient());
   const [dontSave, setDontSave] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [isProcessed, setIsProcessed] = useState(false);
 
   const { file, uploadFile, inputElement, base64String } = useUploadFile();
 
@@ -92,6 +93,8 @@ export const UploadImageDialog = ({ creditsLeft, children }: Props) => {
         throw new Error(processError);
       }
 
+      setIsProcessed(true);
+
       // receive path of new file
 
       const { id, path, fullPath } = data;
@@ -150,6 +153,7 @@ export const UploadImageDialog = ({ creditsLeft, children }: Props) => {
             </div>
 
             <div className="flex items-start space-x-2">
+              {isProcessed ? 'Processed' : null}
               <Checkbox
                 id="dontSave"
                 checked={dontSave}
