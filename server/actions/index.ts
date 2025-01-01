@@ -66,19 +66,31 @@ export const processImage = async ({
   bucketName,
   originalImageUrl,
 }: ProcessImageArgs) => {
+  console.log('DEBUG', 'createSupabaseClient');
   const supabase = createClient(await cookies());
+  console.log('DEBUG', 'createSupabaseClient', supabase);
+
+  console.log('DEBUG', 'connect to gradio');
   const client = await Client.connect(env.GRADIO_API_URL);
+  console.log('DEBUG', 'connect to gradio', client);
+
+  console.log('DEBUG', 'predict gradio');
   const result = await client.predict('/predit_image_1', {
     image_source: originalImageUrl,
   });
+  console.log('DEBUG', 'predict gradio', result);
 
+  console.log('DEBUG', 'get bucket');
   const bucket = supabase.storage.from(bucketName);
+  console.log('DEBUG', 'get bucket', bucket);
 
+  console.log('DEBUG', 'uploadToSignedUrl');
   const { data, error } = await bucket.uploadToSignedUrl(
     path,
     token,
     result.data as File,
   );
+  console.log('DEBUG', 'uploadToSignedUrl', { data, error });
   if (!data || error) return { error: 'Failed to upload' };
 
   console.log('DEBUG', { data });
