@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { MouseEventHandler, useState } from 'react';
 import Image from 'next/image';
-import { Upload } from 'lucide-react';
+import { Upload, X, Download } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -85,7 +85,8 @@ export const UploadImageDialog = ({ children }: Props) => {
   const [isUploading, setIsUploading] = useState(false);
   const [previewProcessedImage, setPreviewProcessedImage] = useState('');
 
-  const { file, uploadFile, inputElement, base64String } = useUploadFile();
+  const { file, uploadFile, inputElement, base64String, clearFiles } =
+    useUploadFile();
 
   const onInteractOutside: OnInteractionOutside = (event) => {
     if (isUploading) {
@@ -96,9 +97,8 @@ export const UploadImageDialog = ({ children }: Props) => {
 
   const onUpload = async () => {
     if (!file?.name) return;
+    console.time('serverResponseTime');
     setIsUploading(true);
-
-    const filepath = Date.now() + file.name;
 
     try {
       const {
@@ -116,28 +116,6 @@ export const UploadImageDialog = ({ children }: Props) => {
 
       const bucketName = `user_${session?.user.id}`;
       const bucket = supabase.storage.from(bucketName);
-      const { data, error: uploadError } = await bucket.upload(filepath, file);
-      if (!data || uploadError) {
-        console.log({ data, uploadError });
-        toast({
-          title: 'Oh! Something went wrong',
-          description: "Could't upload file.",
-          variant: 'destructive',
-        });
-        throw new Error('Failed to upload file');
-      }
-
-      // Get presigned url
-      const { data: originalSignedUrl, error: signedUrlError } =
-        await bucket.createSignedUrl(filepath, 1000 * 600);
-      if (!originalSignedUrl || signedUrlError) {
-        console.log(signedUrlError);
-        toast({
-          description: 'Oh! Something went wrong',
-          variant: 'destructive',
-        });
-        throw new Error('Failed to get presigned Url');
-      }
 
       const processedImage = Date.now() + file.name + '.png';
       const { data: signedUploadData, error: signedUploadError } =
@@ -151,12 +129,14 @@ export const UploadImageDialog = ({ children }: Props) => {
       }
 
       // send it to action
+      console.time('processImage');
       const { error: processError } = await processImage({
+        file,
+        bucketName,
         path: signedUploadData.path,
         token: signedUploadData.token,
-        bucketName,
-        originalImageUrl: originalSignedUrl.signedUrl,
       });
+      console.timeEnd('processImage');
 
       if (processError !== null) {
         toast({
@@ -183,15 +163,44 @@ export const UploadImageDialog = ({ children }: Props) => {
       setPreviewProcessedImage(processedImageUrl.data.signedUrl);
     } catch (err) {
       console.error(err);
+      toast({
+        description: 'Oh! Something went wrong',
+        variant: 'destructive',
+      });
     } finally {
       setIsUploading(false);
+      console.timeEnd('serverResponseTime');
     }
+  };
+
+  const downloadFile: MouseEventHandler<HTMLButtonElement> = async (e) => {
+    if (e === undefined) return;
+
+    const a = document.createElement('a');
+
+    const response = await fetch(previewProcessedImage);
+    if (!response.ok) return;
+
+    const blob = await response.blob();
+    const url = URL.createObjectURL(blob);
+
+    a.href = url;
+    a.download = 'file.png';
+    document.body.appendChild(a);
+    a.click();
+  };
+
+  const cleanup = () => {
+    setDontSave(false);
+    setIsUploading(false);
+    setPreviewProcessedImage('');
+    clearFiles();
   };
 
   return (
     <div>
       {inputElement}
-      <Dialog>
+      <Dialog onOpenChange={(state) => (!state ? cleanup() : null)}>
         <DialogTrigger asChild>{children}</DialogTrigger>
         <DialogContent
           className="sm:max-w-md"
@@ -201,7 +210,19 @@ export const UploadImageDialog = ({ children }: Props) => {
             <DialogTitle>Upload Image</DialogTitle>
           </DialogHeader>
           <div className="grid gap-6">
-            <div className="flex flex-col items-center gap-4 p-6 border-2 border-dashed border-zinc-200 rounded-lg bg-zinc-50">
+            <div className="relative flex flex-col items-center gap-4 p-6 border-2 border-dashed border-zinc-200 rounded-lg bg-zinc-50">
+              <div className="absolute -top-2 -right-2">
+                {base64String && previewProcessedImage === '' ? (
+                  <Button
+                    className="rounded-md p-0.5 h-fit"
+                    variant="secondary"
+                    onClick={clearFiles}
+                    disabled={isUploading}
+                  >
+                    <X size={4} />
+                  </Button>
+                ) : null}
+              </div>
               {file ? (
                 <PreviewImage
                   previewProcessedImage={previewProcessedImage}
@@ -234,9 +255,21 @@ export const UploadImageDialog = ({ children }: Props) => {
               </div>
             </div>
 
-            <Button disabled={isUploading} onClick={onUpload}>
-              {isUploading ? 'Processing...' : `Remove Background (1 Credit)`}
-            </Button>
+            {previewProcessedImage === '' ? (
+              <Button disabled={isUploading} onClick={onUpload}>
+                {isUploading ? 'Processing...' : `Remove Background (1 Credit)`}
+              </Button>
+            ) : (
+              <div className="flex flex-col gap-2">
+                <Button onClick={downloadFile}>
+                  <Download size={4} />
+                  Download
+                </Button>
+                <Button variant="secondary" onClick={cleanup}>
+                  Cancel
+                </Button>
+              </div>
+            )}
           </div>
         </DialogContent>
       </Dialog>

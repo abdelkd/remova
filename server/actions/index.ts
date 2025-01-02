@@ -4,7 +4,12 @@ import { revalidatePath } from 'next/cache';
 import type { AuthForm } from '@/types';
 import { createClient } from '@/lib/supabase/server';
 import { cookies } from 'next/headers';
-import { getBucketName, reduceUserCredit, registerNewUser } from '../db';
+import {
+  getBucketName,
+  reduceUserCredit,
+  registerNewUser,
+  getUserCredits,
+} from '../db';
 import { env } from '@/lib/env/server';
 import { removeBgGradio, removeBgReplicate } from '@/lib/services';
 
@@ -55,32 +60,34 @@ type ProcessImageArgs = {
   bucketName: string;
   path: string;
   token: string;
-  originalImageUrl: string;
+  file: File;
 };
 
 export const processImage = async ({
   path,
   token,
   bucketName,
-  originalImageUrl,
+  file,
 }: ProcessImageArgs) => {
   const supabase = createClient(await cookies());
 
-  const session = await supabase.auth.getSession();
-  const userId = session.data.session?.user.id;
-  if (!session.data || session.error || !userId)
-    return { error: 'UNAUTHORIZED' };
+  const user = await supabase.auth.getUser();
+  const userId = user.data.user?.id;
+  if (!user.data || user.error || !userId) return { error: 'UNAUTHORIZED' };
+
+  const userCredit = await getUserCredits(userId);
+  if (userCredit === 0) return { error: 'UNSUFFICIENT CREDIT' };
 
   const bucket = supabase.storage.from(bucketName);
   const usingGradio = !!env.USE_GRADIO;
 
   const processedImage = usingGradio
-    ? await removeBgGradio(originalImageUrl)
-    : await removeBgReplicate(originalImageUrl);
+    ? await removeBgGradio('')
+    : await removeBgReplicate(file);
 
   if (!processedImage) return { error: 'Failed to process' };
 
-  if (usingGradio === false) {
+  if (usingGradio === false && process.env.NODE_ENV === 'production') {
     await reduceUserCredit(userId);
   }
 

@@ -54,7 +54,7 @@ const LoginPage = () => {
     }
 
     setIsSuccess(true);
-    router.push('/app');
+    router.replace('/app');
   };
 
   return (

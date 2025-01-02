@@ -5,7 +5,7 @@ import { env } from '@/lib/env/server';
 
 type FileBody = File | ArrayBuffer | Blob | ReadableStream<Uint8Array>;
 
-type RemoveBGFn = (image_source: string) => Promise<FileBody | null>;
+type RemoveBGFn = (image_source: string | File) => Promise<FileBody | null>;
 
 type GradioResultData = {
   path: string;
@@ -29,7 +29,6 @@ export const removeBgGradio: RemoveBGFn = async (image_source) => {
   return imageBlob;
 };
 
-// TODO: implement replicate function
 export const removeBgReplicate: RemoveBGFn = async (image) => {
   const replicate = new Replicate();
   const input = {
