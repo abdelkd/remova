@@ -41,7 +41,10 @@ const UserImagesGrid = async ({}) => {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {/* Image grid would go here */}
+          {images &&
+            images.map((image) => (
+              <p key={image.id ?? Symbol('pew')}>{JSON.stringify(image)}</p>
+            ))}
         </div>
       )}
     </>

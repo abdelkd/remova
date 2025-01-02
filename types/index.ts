@@ -11,3 +11,7 @@ export type SupabaseStorageFileApi = ReturnType<SupabaseStorage['from']>;
 export type SupabaseFileObject = Awaited<
   ReturnType<SupabaseStorageFileApi['list']>
 >['data'];
+
+export interface RequestInitExtended extends RequestInit {
+  duplex?: 'half' | 'full';
+}

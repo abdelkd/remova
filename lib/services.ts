@@ -2,6 +2,7 @@ import { Client } from '@gradio/client';
 import Replicate from 'replicate';
 
 import { env } from '@/lib/env/server';
+import { RequestInitExtended } from '@/types';
 
 type FileBody = File | ArrayBuffer | Blob | ReadableStream<Uint8Array>;
 
@@ -25,7 +26,10 @@ export const removeBgGradio: RemoveBGFn = async (image_source) => {
   const resultData = result.data as GradioResultData[][];
   const resultImage = resultData[0][0];
 
-  const imageBlob = await fetch(resultImage.url).then((r) => r.blob());
+  const params: RequestInitExtended = {
+    duplex: 'half',
+  };
+  const imageBlob = await fetch(resultImage.url, params).then((r) => r.blob());
   return imageBlob;
 };
 

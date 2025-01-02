@@ -17,6 +17,7 @@ import type { OnInteractionOutside } from '@/components/ui/types';
 import { createClient } from '@/lib/supabase/client';
 import { processImage } from '@/server/actions';
 import { useToast } from '@/hooks/use-toast';
+import { RequestInitExtended } from '@/types';
 
 type Props = {
   children: React.ReactNode;
@@ -175,7 +176,10 @@ export const UploadImageDialog = ({ children }: Props) => {
 
     const a = document.createElement('a');
 
-    const response = await fetch(previewProcessedImage);
+    const params: RequestInitExtended = {
+      duplex: 'half',
+    };
+    const response = await fetch(previewProcessedImage, params);
     if (!response.ok) return;
 
     const blob = await response.blob();
