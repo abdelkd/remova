@@ -3,13 +3,13 @@ import { redirect } from 'next/navigation';
 
 import { Button } from '@/components/ui/button';
 import { UploadImageDialog } from '@/components/UploadImageDialog';
-import { getUser } from '@/lib/supabase/server';
+import { getCachedUser } from '@/lib/cache';
 
 const UserImagesGrid = async ({}) => {
   const {
     data: { user },
     error,
-  } = await getUser();
+  } = await getCachedUser();
   if (!user || error) return redirect('/login');
 
   const images = [];

@@ -1,7 +1,10 @@
 import { redirect } from 'next/navigation';
 import type { Metadata } from 'next';
-import { cookies } from 'next/headers';
-import { createClient } from '@/lib/supabase/server';
+import {
+  getCachedUser,
+  getCachedUserCredits,
+  getCachesUserImages,
+} from '@/lib/cache';
 
 export const maxDuration = 60;
 
@@ -12,12 +15,14 @@ export const metadata: Metadata = {
 };
 
 export default async function AppLayout({ children }: React.PropsWithChildren) {
-  const supabase = createClient(await cookies());
-
-  const { data, error } = await supabase.auth.getUser();
+  const { data, error } = await getCachedUser();
   if (!data.user || error) {
     redirect('/login');
   }
+
+  getCachesUserImages(data.user.id);
+  getCachedUserCredits(data.user.id);
+  getCachedUser();
 
   return <>{children}</>;
 }

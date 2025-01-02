@@ -1,15 +1,14 @@
 import { Info } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogTrigger } from '@/components/ui/dialog';
-import { getUser } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
-import { getCachedUserCredits } from '@/lib/cache';
+import { getCachedUser, getCachedUserCredits } from '@/lib/cache';
 
 const LowCreditsInfo = async () => {
   const {
     data: { user },
     error,
-  } = await getUser();
+  } = await getCachedUser();
   if (!user || error) return redirect('/login');
 
   const creditsLeft = await getCachedUserCredits(user.id);

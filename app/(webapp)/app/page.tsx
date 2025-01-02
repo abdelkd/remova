@@ -10,13 +10,13 @@ import LowCreditsInfo from '@/components/LowCreditsInfo';
 import { Button } from '@/components/ui/button';
 import { UploadImageDialog } from '@/components/UploadImageDialog';
 import UserImagesGrid from '@/components/UserImagesGrid';
-import { getUser } from '@/lib/supabase/server';
+import { getCachedUser } from '@/lib/cache';
 
 const MainApp = async () => {
   const {
     data: { user },
     error,
-  } = await getUser();
+  } = await getCachedUser();
   if (!user || error) {
     redirect('/login');
   }
