@@ -57,18 +57,12 @@ export const signUpUser = async ({ email, password }: AuthForm) => {
 };
 
 type ProcessImageArgs = {
-  bucketName: string;
   path: string;
   token: string;
   file: File;
 };
 
-export const processImage = async ({
-  path,
-  token,
-  bucketName,
-  file,
-}: ProcessImageArgs) => {
+export const processImage = async ({ path, token, file }: ProcessImageArgs) => {
   const supabase = createClient(await cookies());
 
   const user = await supabase.auth.getUser();
@@ -78,7 +72,7 @@ export const processImage = async ({
   const userCredit = await getUserCredits(userId);
   if (userCredit === 0) return { error: 'UNSUFFICIENT CREDIT' };
 
-  const bucket = supabase.storage.from(bucketName);
+  const bucket = supabase.storage.from(getBucketName(userId));
   const usingGradio = !!env.USE_GRADIO;
 
   const processedImage = usingGradio
