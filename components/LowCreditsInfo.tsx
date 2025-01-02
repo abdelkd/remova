@@ -28,7 +28,10 @@ const LowCreditsInfo = async () => {
             </div>
             <Dialog>
               <DialogTrigger asChild>
-                <Button variant="outline" className="border-white">
+                <Button
+                  variant="outline"
+                  className="border-white text-foreground"
+                >
                   Buy Credits
                 </Button>
               </DialogTrigger>
