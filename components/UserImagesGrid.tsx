@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation';
 
 import { Button } from '@/components/ui/button';
 import { UploadImageDialog } from '@/components/UploadImageDialog';
-import { getCachedUser } from '@/lib/cache';
+import { getCachedUser, getCachedUserImages } from '@/lib/cache';
 
 const UserImagesGrid = async ({}) => {
   const {
@@ -12,7 +12,12 @@ const UserImagesGrid = async ({}) => {
   } = await getCachedUser();
   if (!user || error) return redirect('/login');
 
-  const images = [];
+  const { data: images, error: imagesError } = await getCachedUserImages(
+    user.id,
+  );
+  if (imagesError) {
+    throw new Error('Could not get images');
+  }
 
   return (
     <>
@@ -43,7 +48,9 @@ const UserImagesGrid = async ({}) => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {images &&
             images.map((image) => (
-              <p key={image.id ?? Symbol('pew')}>{JSON.stringify(image)}</p>
+              <p key={image.id}>
+                {image.name} by {image.owner}
+              </p>
             ))}
         </div>
       )}

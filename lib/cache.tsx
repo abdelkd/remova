@@ -4,5 +4,5 @@ import { cache } from 'react';
 import { getUser } from '@/lib/supabase/server';
 
 export const getCachedUserCredits = cache(getUserCredits);
-export const getCachesUserImages = cache(getUserImages);
+export const getCachedUserImages = cache(getUserImages);
 export const getCachedUser = cache(getUser);
