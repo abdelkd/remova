@@ -4,19 +4,11 @@ import { Camera, Wand2, ArrowRight, Image as ImageIcon } from 'lucide-react';
 
 import { Card, CardHeader, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { getUser } from '@/lib/supabase/server';
-import { redirect } from 'next/navigation';
 
 import image1 from '@/assets/1.webp';
 import image2 from '@/assets/2.webp';
 
 const HeroSection = async () => {
-  const {
-    data: { user },
-    error,
-  } = await getUser();
-  if (!user || error) return redirect('/login');
-
   return (
     <div className="w-full max-w-6xl mx-auto p-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center min-h-[80vh]">
@@ -62,7 +54,7 @@ const HeroSection = async () => {
 
           <div className="flex flex-col sm:flex-row gap-4">
             <Button size="lg" className="text-base font-semibold px-8" asChild>
-              <Link href={user ? '/app' : '/login'}>
+              <Link href="/app">
                 Get Started
                 <ArrowRight className="ml-2 w-4 h-4" />
               </Link>
@@ -199,12 +191,6 @@ const PricingSection = () => {
 };
 
 const FeatureSection = async () => {
-  const {
-    data: { user },
-    error,
-  } = await getUser();
-  if (!user || error) return redirect('/login');
-
   return (
     <div className="w-full max-w-6xl mx-auto p-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
@@ -287,7 +273,7 @@ const FeatureSection = async () => {
               className="w-full py-6 text-lg font-semibold rounded-xl"
               asChild
             >
-              <Link href={user ? '/app' : '/login'}>Try It Now</Link>
+              <Link href="/app">Try It Now</Link>
             </Button>
             <p className="text-center text-sm text-zinc-500">
               Get pixel-perfect results instantly
