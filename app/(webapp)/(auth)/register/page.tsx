@@ -28,7 +28,7 @@ import { Button } from '@/components/ui/button';
 import LoadingSpinner from '@/components/loading-spinner';
 import { authFormSchema } from '@/schemas';
 
-import { signUpUser } from '@/server/actions';
+import { signUpUser } from '@/server/actions/auth';
 import type { AuthForm } from '@/types';
 
 const SignupPage = () => {

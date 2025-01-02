@@ -5,7 +5,7 @@ import type { AuthForm } from '@/types';
 import { createClient } from '@/lib/supabase/server';
 import { cookies } from 'next/headers';
 import { registerNewUser } from '@/server/db';
-import { getBucketName } from '.';
+import { getBucketName } from '@/lib/utils';
 
 export const loginUser = async ({ email, password }: AuthForm) => {
   const supabase = createClient(await cookies());

@@ -10,8 +10,6 @@ import LowCreditsInfo from '@/components/LowCreditsInfo';
 import { Button } from '@/components/ui/button';
 import { UploadImageDialog } from '@/components/UploadImageDialog';
 import UserImagesGrid from '@/components/UserImagesGrid';
-import { getCachedUserCredits } from '@/lib/cache';
-import { getBucketName } from '@/server/db';
 import { getUser } from '@/lib/supabase/server';
 
 const MainApp = async () => {
@@ -21,12 +19,6 @@ const MainApp = async () => {
   } = await getUser();
   if (!user || error) {
     redirect('/login');
-  }
-
-  const creditsLeft = await getCachedUserCredits(user.id);
-  const bucketName = await getBucketName(user.id);
-  if (!bucketName) {
-    console.error('Invalid Bucket Name');
   }
 
   return (
@@ -53,7 +45,7 @@ const MainApp = async () => {
             Background Removal
           </h1>
 
-          <UploadImageDialog creditsLeft={creditsLeft} bucketName={bucketName!}>
+          <UploadImageDialog>
             <Button className="gap-2">
               <Plus className="w-4 h-4" />
               New Image

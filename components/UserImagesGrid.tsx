@@ -4,18 +4,13 @@ import { redirect } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { UploadImageDialog } from '@/components/UploadImageDialog';
 import { getUser } from '@/lib/supabase/server';
-import { getCachedUserCredits } from '@/lib/cache';
-import { getBucketName } from '@/server/db';
 
-const UserImagesGrid = async () => {
+const UserImagesGrid = async ({}) => {
   const {
     data: { user },
     error,
   } = await getUser();
   if (!user || error) return redirect('/login');
-
-  const creditsLeft = await getCachedUserCredits(user.id);
-  const bucketName = await getBucketName(user.id);
 
   const images = [];
 
@@ -36,10 +31,7 @@ const UserImagesGrid = async () => {
                 processed uses 1 credit.
               </p>
             </div>
-            <UploadImageDialog
-              creditsLeft={creditsLeft}
-              bucketName={bucketName!}
-            >
+            <UploadImageDialog>
               <Button variant="outline" className="mt-2">
                 <Plus className="w-4 h-4 mr-2" />
                 Upload Image

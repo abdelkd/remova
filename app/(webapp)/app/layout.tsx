@@ -1,6 +1,5 @@
 import { redirect } from 'next/navigation';
 import type { Metadata } from 'next';
-import { getCachedUserCredits } from '@/lib/cache';
 import { cookies } from 'next/headers';
 import { createClient } from '@/lib/supabase/server';
 
@@ -19,8 +18,6 @@ export default async function AppLayout({ children }: React.PropsWithChildren) {
   if (!data.user || error) {
     redirect('/login');
   }
-
-  getCachedUserCredits(data.user.id);
 
   return <>{children}</>;
 }

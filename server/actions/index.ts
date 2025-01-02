@@ -4,7 +4,7 @@ import { cookies } from 'next/headers';
 import { reduceUserCredit, getUserCredits } from '@/server/db';
 import { env } from '@/lib/env/server';
 import { removeBgGradio, removeBgReplicate } from '@/lib/services';
-import { getBucketName } from './supabase';
+import { getBucketName } from '@/lib/utils';
 
 type ProcessImageArgs = {
   path: string;
@@ -44,5 +44,3 @@ export const processImage = async ({ path, token, file }: ProcessImageArgs) => {
 
   return { error: null };
 };
-
-export * from './supabase';

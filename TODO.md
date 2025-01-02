@@ -5,3 +5,4 @@
 - [ ] list all images
 - [ ] add paging to images grid
 - [ ] improve login routing time
+- [ ] add store

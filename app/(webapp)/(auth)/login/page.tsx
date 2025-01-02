@@ -28,7 +28,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { authFormSchema } from '@/schemas';
 
-import { loginUser } from '@/server/actions';
+import { loginUser } from '@/server/actions/auth';
 import type { AuthForm } from '@/types';
 import LoadingSpinner from '@/components/loading-spinner';
 

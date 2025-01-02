@@ -19,8 +19,6 @@ import { processImage } from '@/server/actions';
 import { useToast } from '@/hooks/use-toast';
 
 type Props = {
-  creditsLeft: number;
-  bucketName: string;
   children: React.ReactNode;
 };
 
