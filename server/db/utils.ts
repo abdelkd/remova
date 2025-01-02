@@ -42,7 +42,3 @@ export const reduceUserCredit = async (userId: string) => {
 
   console.log(`REDUCED POINT`, result);
 };
-
-export const getBucketName = (id: string) => {
-  return `user_${id}`;
-};
