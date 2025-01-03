@@ -61,7 +61,7 @@ const PreviewImage = ({
     <Image
       src={previewOriginalImage!}
       alt="preview image"
-      className="max-w-md max-h-md w-full h-auto"
+      className="max-w-md max-h-80 w-full h-auto"
       width={550}
       height={550}
     />
@@ -69,7 +69,7 @@ const PreviewImage = ({
     <Image
       src={previewProcessedImage!}
       alt="preview image"
-      className="max-w-md max-h-md w-full h-auto"
+      className="max-w-md max-h-80 w-full h-auto"
       width={550}
       height={550}
     />
@@ -208,7 +208,7 @@ export const UploadImageDialog = ({ children, credits }: Props) => {
             <DialogTitle>Upload Image</DialogTitle>
           </DialogHeader>
           <div className="grid gap-6">
-            <div className="relative flex flex-col items-center gap-4 p-6 border-2 border-dashed border-zinc-200 rounded-lg bg-zinc-50">
+            <div className="relative flex flex-col items-center gap-4 p-6 border-2 border-dashed border-zinc-200 rounded-lg bg-zinc-50 max-h-md">
               <div className="absolute -top-2 -right-2">
                 {base64String && previewProcessedImage === '' ? (
                   <Button
