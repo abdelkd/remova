@@ -1,10 +1,14 @@
 import { PropsWithChildren } from 'react';
-import { getCurrentSession } from '@/lib/auth';
 import { redirect } from 'next/navigation';
+import { cookies } from 'next/headers';
+import { createClient } from '@/lib/supabase/server';
 
 const AuthLayout = async ({ children }: PropsWithChildren) => {
-  const { user } = await getCurrentSession();
-  if (user) return redirect('/app');
+  const supabase = createClient(await cookies());
+  const { data } = await supabase.auth.getUser();
+  if (data?.user) {
+    redirect('/app');
+  }
 
   return <>{children}</>;
 };

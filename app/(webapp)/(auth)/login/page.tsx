@@ -28,7 +28,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { authFormSchema } from '@/schemas';
 
-import { loginUser } from '@/server/actions';
+import { loginUser } from '@/server/actions/auth';
 import type { AuthForm } from '@/types';
 import LoadingSpinner from '@/components/loading-spinner';
 
@@ -44,14 +44,17 @@ const LoginPage = () => {
   });
 
   const onSubmit = async (values: AuthForm) => {
-    const user = await loginUser(values);
-    if (!user) {
+    const {
+      data: { user },
+      error,
+    } = await loginUser(values);
+    if (!user || error) {
       form.setError('root', { message: 'Invalid login credentials.' });
       return;
     }
 
     setIsSuccess(true);
-    router.push('/app');
+    router.replace('/app');
   };
 
   return (
@@ -102,28 +105,29 @@ const LoginPage = () => {
                 ) : null}
               </div>
 
-              <Button
-                type="submit"
-                className="w-full"
-                disabled={form.formState.isSubmitting}
-              >
-                {form.formState.isSubmitting ? (
-                  <>
-                    <LoadingSpinner />
-                    Loggin in...
-                  </>
-                ) : (
-                  'Sign In'
-                )}
-              </Button>
-              <p>
-                Do not have an account?{' '}
-                <Button variant="link" asChild>
-                  <Link href="/register" className="px-2">
-                    Sign Up
-                  </Link>
+              <div>
+                {' '}
+                <Button
+                  type="submit"
+                  className="w-full"
+                  disabled={form.formState.isSubmitting}
+                >
+                  {form.formState.isSubmitting ? (
+                    <>
+                      <LoadingSpinner />
+                      Loggin in...
+                    </>
+                  ) : (
+                    'Sign In'
+                  )}
                 </Button>
-              </p>
+                <p>
+                  Do not have an account?{' '}
+                  <Button variant="link" className="p-0" asChild>
+                    <Link href="/register">Sign Up</Link>
+                  </Button>
+                </p>
+              </div>
             </form>
           </Form>
         </CardContent>

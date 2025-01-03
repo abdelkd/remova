@@ -1,4 +1,10 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 
 export const BuyCreditsDialog = () => {
@@ -18,7 +24,9 @@ export const BuyCreditsDialog = () => {
             <div className="flex items-center justify-between p-4 rounded-lg border border-zinc-200 hover:border-primary/50 cursor-pointer">
               <div>
                 <div className="font-medium">50 Credits</div>
-                <div className="text-sm text-zinc-500">Perfect for small projects</div>
+                <div className="text-sm text-zinc-500">
+                  Perfect for small projects
+                </div>
               </div>
               <Button>$10</Button>
             </div>
@@ -40,5 +48,5 @@ export const BuyCreditsDialog = () => {
         </div>
       </DialogContent>
     </Dialog>
-  )
-}
+  );
+};

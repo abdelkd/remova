@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
@@ -22,18 +21,17 @@ import {
   FormControl,
   FormDescription,
   FormMessage,
-  FormRootError
+  FormRootError,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import LoadingSpinner from '@/components/loading-spinner';
 import { authFormSchema } from '@/schemas';
 
-import { loginUser, signupUser } from '@/server/actions';
+import { signUpUser } from '@/server/actions/auth';
 import type { AuthForm } from '@/types';
 
 const SignupPage = () => {
-  const router = useRouter();
   const [isSuccess, setIsSuccess] = useState(false);
   const form = useForm<AuthForm>({
     resolver: zodResolver(authFormSchema),
@@ -44,8 +42,8 @@ const SignupPage = () => {
   });
 
   const onSubmit = async (values: AuthForm) => {
-    const user = await signupUser(values);
-    if (user) {
+    const { data, error } = await signUpUser(values);
+    if (!data?.user || !!error) {
       form.setError('root', {
         message: 'User already exists, please sign in.',
       });
@@ -53,11 +51,6 @@ const SignupPage = () => {
     }
 
     setIsSuccess(true);
-    loginUser(values)
-      .then(() => {
-        router.push('/app');
-      })
-      .catch(() => router.push('/login'));
   };
 
   return (
@@ -108,20 +101,27 @@ const SignupPage = () => {
                 ) : null}
               </div>
 
-              <Button className="w-full" disabled={form.formState.isSubmitting}>
-                {form.formState.isSubmitting ? (
-                  <>
-                    <LoadingSpinner />
-                    Creating account...
-                  </>
-                ) : (
-                  'Sign Up'
-                )}
-              </Button>
-              <p>
-                Already have an account? <Button variant="link" asChild><Link href="/login" className="px-2">Sign In</Link></Button>
-              </p>
-
+              <div>
+                <Button
+                  className="w-full"
+                  disabled={form.formState.isSubmitting}
+                >
+                  {form.formState.isSubmitting ? (
+                    <>
+                      <LoadingSpinner />
+                      Creating account...
+                    </>
+                  ) : (
+                    'Sign Up'
+                  )}
+                </Button>
+                <p>
+                  Already have an account?{' '}
+                  <Button variant="link" className="p-0" asChild>
+                    <Link href="/login">Sign In</Link>
+                  </Button>
+                </p>
+              </div>
             </form>
           </Form>
         </CardContent>

@@ -1,6 +1,12 @@
-import { getCurrentSession } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 import type { Metadata } from 'next';
+import {
+  getCachedUser,
+  getCachedUserCredits,
+  getCachedUserImages,
+} from '@/lib/cache';
+
+export const maxDuration = 60;
 
 export const metadata: Metadata = {
   title: 'Your Workspace – Remove Backgrounds & Create Magic with Extract',
@@ -9,8 +15,14 @@ export const metadata: Metadata = {
 };
 
 export default async function AppLayout({ children }: React.PropsWithChildren) {
-  const { user } = await getCurrentSession();
-  if (!user) return redirect('/login');
+  const { data, error } = await getCachedUser();
+  if (!data.user || error) {
+    redirect('/login');
+  }
+
+  getCachedUserImages(data.user.id);
+  getCachedUserCredits(data.user.id);
+  getCachedUser();
 
   return <>{children}</>;
 }

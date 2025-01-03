@@ -1,0 +1,13 @@
+
+- [X] landingpage is not hit on unauthorized users
+- [X] Add download button in place of generate (maybe)
+- [X] Gracefully handle failure on fetch failure
+- [X] fix low credit info credit
+- [X] make cached version of `getUser` function
+- [X] list all images
+- [X] add fallback when image/ fail to load
+- [ ] add deposit
+- [ ] add paging to images grid
+- [ ] improve login routing time
+- [ ] add store
+- [ ] organize files

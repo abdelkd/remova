@@ -3,9 +3,10 @@ import { sqliteTable, integer, text } from 'drizzle-orm/sqlite-core';
 import type { InferSelectModel } from 'drizzle-orm';
 
 export const userTable = sqliteTable('user', {
-  id: integer('id').primaryKey(),
+  id: text('id').primaryKey(),
   email: text('email').notNull(),
   password: text('password').notNull(),
+  credits: integer('credits_left').notNull().default(3),
 });
 
 export const sessionTable = sqliteTable('session', {
