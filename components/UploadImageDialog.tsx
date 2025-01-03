@@ -61,7 +61,7 @@ const PreviewImage = ({
     <Image
       src={previewOriginalImage!}
       alt="preview image"
-      className="max-w-md max-h-80 w-full h-auto"
+      className="max-w-md max-h-80 w-full h-auto object-cover"
       width={550}
       height={550}
     />
@@ -69,7 +69,7 @@ const PreviewImage = ({
     <Image
       src={previewProcessedImage!}
       alt="preview image"
-      className="max-w-md max-h-80 w-full h-auto"
+      className="max-w-md max-h-80 w-full h-auto object-cover"
       width={550}
       height={550}
     />
