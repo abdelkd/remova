@@ -47,6 +47,8 @@ export const processImage = async ({ path, token, file }: ProcessImageArgs) => {
   const { data, error } = await bucket.uploadToSignedUrl(path, token, blob);
   if (!data || error) return { error: 'Failed to upload' };
 
+  await bucket.remove([uploadedFile.data.path]);
+
   if (usingGradio === false && process.env.NODE_ENV === 'production') {
     await reduceUserCredit(userId);
   }
