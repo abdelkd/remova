@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import {
   getCachedUser,
   getCachedUserCredits,
-  getCachesUserImages,
+  getCachedUserImages,
 } from '@/lib/cache';
 
 export const maxDuration = 60;
@@ -20,7 +20,7 @@ export default async function AppLayout({ children }: React.PropsWithChildren) {
     redirect('/login');
   }
 
-  getCachesUserImages(data.user.id);
+  getCachedUserImages(data.user.id);
   getCachedUserCredits(data.user.id);
   getCachedUser();
 
