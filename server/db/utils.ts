@@ -1,4 +1,4 @@
-import { db, userTable } from '@/server/db';
+import { User, db, userTable } from '@/server/db';
 import { eq } from 'drizzle-orm';
 import { sql } from 'drizzle-orm/sql';
 
@@ -6,20 +6,12 @@ export const getUserByEmail = (email: string) => {
   return db.select().from(userTable).where(eq(userTable.email, email));
 };
 
-type RegisterUserParams = {
-  id: string;
-  email: string;
-  password: string;
-  bucketName: string;
-};
-
 export const registerNewUser = ({
   id,
   email,
   password,
-  bucketName,
-}: RegisterUserParams) => {
-  return db.insert(userTable).values({ id, email, password, bucketName });
+}: Omit<User, 'creditsLeft'>) => {
+  return db.insert(userTable).values({ id, email, password });
 };
 
 export const getUserCredits = async (id: string) => {

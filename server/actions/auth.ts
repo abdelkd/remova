@@ -33,7 +33,7 @@ export const signUpUser = async ({ email, password }: AuthForm) => {
     }
 
     const bucketName = getBucketName(data.user.id);
-    await registerNewUser({ id: data.user.id, email, password, bucketName });
+    await registerNewUser({ id: data.user.id, email, password });
 
     const bucketResult = await supabase.storage.createBucket(bucketName);
 

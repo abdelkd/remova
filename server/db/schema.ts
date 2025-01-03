@@ -1,14 +1,12 @@
 import { sqliteTable, integer, text } from 'drizzle-orm/sqlite-core';
 
 import type { InferSelectModel } from 'drizzle-orm';
-import { randomUUID } from 'node:crypto';
 
 export const userTable = sqliteTable('user', {
   id: text('id').primaryKey(),
   email: text('email').notNull(),
   password: text('password').notNull(),
-  creditsLeft: integer('credits_left').notNull().default(0),
-  bucketName: text('bucketName').notNull().$defaultFn(randomUUID),
+  creditsLeft: integer('credits_left').notNull().default(3),
 });
 
 export const sessionTable = sqliteTable('session', {
