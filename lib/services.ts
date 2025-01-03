@@ -33,8 +33,20 @@ export const removeBgGradio: RemoveBGFn = async (image_source) => {
   return imageBlob;
 };
 
+// This is used for duplex error
+const fetchWithDuplex = async (
+  input: string | Request,
+  init?: RequestInitExtended | undefined,
+) => {
+  const opts = {
+    ...init,
+    duplex: 'half',
+  };
+  return fetch(input, opts);
+};
+
 export const removeBgReplicate: RemoveBGFn = async (image) => {
-  const replicate = new Replicate();
+  const replicate = new Replicate({ fetch: fetchWithDuplex });
   const input = {
     image,
   };
