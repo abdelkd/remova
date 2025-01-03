@@ -19,6 +19,7 @@ import { processImage } from '@/server/actions';
 import { useToast } from '@/hooks/use-toast';
 
 type Props = {
+  credits: number;
   children: React.ReactNode;
 };
 
@@ -75,7 +76,7 @@ const PreviewImage = ({
   );
 };
 
-export const UploadImageDialog = ({ children }: Props) => {
+export const UploadImageDialog = ({ children, credits }: Props) => {
   const { toast } = useToast();
 
   const [supabase] = useState(() => createClient());
@@ -253,7 +254,10 @@ export const UploadImageDialog = ({ children }: Props) => {
             </div>
 
             {previewProcessedImage === '' ? (
-              <Button disabled={isUploading} onClick={onUpload}>
+              <Button
+                disabled={isUploading || credits === 0 || !file}
+                onClick={onUpload}
+              >
                 {isUploading ? 'Processing...' : `Remove Background (1 Credit)`}
               </Button>
             ) : (

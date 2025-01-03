@@ -6,7 +6,11 @@ import { redirect } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { UploadImageDialog } from '@/components/UploadImageDialog';
-import { getCachedUser, getCachedUserImages } from '@/lib/cache';
+import {
+  getCachedUser,
+  getCachedUserCredits,
+  getCachedUserImages,
+} from '@/lib/cache';
 import { SupabaseFileObject, SupabaseStorageFileApi } from '@/types';
 import { createClient } from '@/lib/supabase/server';
 import { cookies } from 'next/headers';
@@ -47,6 +51,7 @@ const UserImagesGrid = async ({}) => {
   } = await getCachedUser();
   if (!user || error) return redirect('/login');
 
+  const credits = await getCachedUserCredits(user.id);
   const { data: images, error: imagesError } = await getCachedUserImages(
     user.id,
   );
@@ -74,7 +79,7 @@ const UserImagesGrid = async ({}) => {
                 processed uses 1 credit.
               </p>
             </div>
-            <UploadImageDialog>
+            <UploadImageDialog credits={credits}>
               <Button variant="outline" className="mt-2">
                 <Plus className="w-4 h-4 mr-2" />
                 Upload Image
