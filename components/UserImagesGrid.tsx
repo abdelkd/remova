@@ -1,9 +1,44 @@
+import { Suspense } from 'react';
 import { Image as ImageIcon, Plus } from 'lucide-react';
+import Image from 'next/image';
 import { redirect } from 'next/navigation';
 
 import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
 import { UploadImageDialog } from '@/components/UploadImageDialog';
 import { getCachedUser, getCachedUserImages } from '@/lib/cache';
+import { SupabaseFileObject, SupabaseStorageFileApi } from '@/types';
+import { createClient } from '@/lib/supabase/server';
+import { cookies } from 'next/headers';
+import { getBucketName } from '@/lib/utils';
+
+type ImageCardProps = {
+  bucket: SupabaseStorageFileApi;
+  imageInfo: NonNullable<SupabaseFileObject>[number];
+};
+
+export const ImageCardSkeleton = () => {
+  return <Skeleton />;
+};
+
+export const ImageCard = async ({ bucket, imageInfo }: ImageCardProps) => {
+  const { data, error } = await bucket.createSignedUrl(imageInfo.name, 60 * 30);
+  await new Promise((res) => setTimeout(res, 4000));
+
+  // TODO: Show fallback
+  if (!data || error) return null;
+
+  return (
+    <Image
+      src={data.signedUrl}
+      alt={'An image'}
+      height={512}
+      width={512}
+      placeholder="blur"
+      blurDataURL="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgdmlld0JveD0iMCAwIDEwIDEwIj4KICA8cmVjdCB3aWR0aD0iMTAiIGhlaWdodD0iMTAiIGZpbGw9ImhzbCgyNDAsIDQuOCUsIDk1LjklKSIvPgo8L3N2Zz4="
+    />
+  );
+};
 
 const UserImagesGrid = async ({}) => {
   const {
@@ -18,6 +53,9 @@ const UserImagesGrid = async ({}) => {
   if (imagesError) {
     throw new Error('Could not get images');
   }
+
+  const supabase = createClient(await cookies());
+  const bucket = supabase.storage.from(getBucketName(user.id));
 
   return (
     <>
@@ -48,9 +86,9 @@ const UserImagesGrid = async ({}) => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {images &&
             images.map((image) => (
-              <p key={image.id}>
-                {image.name} by {image.owner}
-              </p>
+              <Suspense key={image.id} fallback={<ImageCardSkeleton />}>
+                <ImageCard imageInfo={image} bucket={bucket} />
+              </Suspense>
             ))}
         </div>
       )}
