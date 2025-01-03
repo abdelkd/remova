@@ -4,7 +4,9 @@
 - [X] Gracefully handle failure on fetch failure
 - [X] fix low credit info credit
 - [X] make cached version of `getUser` function
-- [ ] list all images
+- [X] list all images
+- [X] add fallback when image/ fail to load
+- [ ] add deposit
 - [ ] add paging to images grid
 - [ ] improve login routing time
 - [ ] add store
