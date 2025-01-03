@@ -6,7 +6,7 @@ export const userTable = sqliteTable('user', {
   id: text('id').primaryKey(),
   email: text('email').notNull(),
   password: text('password').notNull(),
-  creditsLeft: integer('credits_left').notNull().default(3),
+  credits: integer('credits_left').notNull().default(3),
 });
 
 export const sessionTable = sqliteTable('session', {

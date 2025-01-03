@@ -10,24 +10,24 @@ export const registerNewUser = ({
   id,
   email,
   password,
-}: Omit<User, 'creditsLeft'>) => {
+}: Omit<User, 'credits'>) => {
   return db.insert(userTable).values({ id, email, password });
 };
 
 export const getUserCredits = async (id: string) => {
   const result = await db
-    .select({ creditsLeft: userTable.creditsLeft })
+    .select({ credits: userTable.credits })
     .from(userTable)
     .where(eq(userTable.id, id));
 
-  return result[0]?.creditsLeft ?? 0;
+  return result[0]?.credits ?? 0;
 };
 
 export const reduceUserCredit = async (userId: string) => {
   const result = await db
     .update(userTable)
     .set({
-      creditsLeft: sql`${userTable.creditsLeft} - 1`,
+      credits: sql`${userTable.credits} - 1`,
     })
     .where(eq(userTable.id, userId))
     .returning();

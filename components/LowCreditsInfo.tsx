@@ -11,11 +11,11 @@ const LowCreditsInfo = async () => {
   } = await getCachedUser();
   if (!user || error) return redirect('/login');
 
-  const creditsLeft = await getCachedUserCredits(user.id);
+  const credits = await getCachedUserCredits(user.id);
 
   return (
     <>
-      {creditsLeft < 10 && (
+      {credits < 10 && (
         <div className="fixed bottom-0 left-0 right-0 bg-zinc-900 text-white p-4">
           <div className="max-w-6xl mx-auto flex items-center justify-between">
             <div className="flex items-center gap-2">
