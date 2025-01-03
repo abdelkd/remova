@@ -5,6 +5,7 @@ import { reduceUserCredit, getUserCredits } from '@/server/db';
 import { env } from '@/lib/env/server';
 import { removeBgGradio, removeBgReplicate } from '@/lib/services';
 import { getBucketName } from '@/lib/utils';
+import { revalidatePath } from 'next/cache';
 
 type ProcessImageArgs = {
   path: string;
@@ -52,6 +53,8 @@ export const processImage = async ({ path, token, file }: ProcessImageArgs) => {
   if (usingGradio === false && process.env.NODE_ENV === 'production') {
     await reduceUserCredit(userId);
   }
+
+  revalidatePath('/app', 'page');
 
   return { error: null };
 };
