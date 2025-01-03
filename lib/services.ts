@@ -1,8 +1,7 @@
 import { Client } from '@gradio/client';
-import Replicate from 'replicate';
 
 import { env } from '@/lib/env/server';
-import { RequestInitExtended } from '@/types';
+// import { RequestInitExtended } from '@/types';
 
 type FileBody = File | ArrayBuffer | Blob | ReadableStream<Uint8Array>;
 
@@ -26,23 +25,40 @@ export const removeBgGradio: RemoveBGFn = async (image_source) => {
   const resultData = result.data as GradioResultData[][];
   const resultImage = resultData[0][0];
 
-  const params: RequestInitExtended = {
-    duplex: 'half',
-  };
-  const imageBlob = await fetch(resultImage.url, params).then((r) => r.blob());
+  const imageBlob = await fetch(resultImage.url).then((r) => r.blob());
   return imageBlob;
 };
 
-export const removeBgReplicate: RemoveBGFn = async (image) => {
-  const replicate = new Replicate();
-  const input = {
-    image,
+// TODO: use streaming
+export const removeBgReplicate = async (image: string) => {
+  const url = 'https://api.replicate.com/v1/predictions';
+
+  const payload = {
+    version: 'f74986db0355b58403ed20963af156525e2891ea3c2d499bfbfb2a28cd87c5d7',
+    input: {
+      image,
+    },
   };
 
-  const output = (await replicate.run(
-    'men1scus/birefnet:f74986db0355b58403ed20963af156525e2891ea3c2d499bfbfb2a28cd87c5d7',
-    { input },
-  )) as ReadableStream<Uint8Array>;
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${process.env.REPLICATE_API_TOKEN}`,
+        'Content-Type': 'application/json',
+        Prefer: 'wait',
+      },
+      body: JSON.stringify(payload),
+    });
 
-  return output;
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log('Prediction created:', data);
+    return data['output'];
+  } catch (error) {
+    console.error('Error creating prediction:', error);
+  }
 };

@@ -17,9 +17,9 @@ import type { OnInteractionOutside } from '@/components/ui/types';
 import { createClient } from '@/lib/supabase/client';
 import { processImage } from '@/server/actions';
 import { useToast } from '@/hooks/use-toast';
-import { RequestInitExtended } from '@/types';
 
 type Props = {
+  credits: number;
   children: React.ReactNode;
 };
 
@@ -61,7 +61,7 @@ const PreviewImage = ({
     <Image
       src={previewOriginalImage!}
       alt="preview image"
-      className="max-w-md max-h-md w-full h-auto"
+      className="max-w-md max-h-80 w-full h-auto"
       width={550}
       height={550}
     />
@@ -69,14 +69,14 @@ const PreviewImage = ({
     <Image
       src={previewProcessedImage!}
       alt="preview image"
-      className="max-w-md max-h-md w-full h-auto"
+      className="max-w-md max-h-80 w-full h-auto"
       width={550}
       height={550}
     />
   );
 };
 
-export const UploadImageDialog = ({ children }: Props) => {
+export const UploadImageDialog = ({ children, credits }: Props) => {
   const { toast } = useToast();
 
   const [supabase] = useState(() => createClient());
@@ -176,10 +176,7 @@ export const UploadImageDialog = ({ children }: Props) => {
 
     const a = document.createElement('a');
 
-    const params: RequestInitExtended = {
-      duplex: 'half',
-    };
-    const response = await fetch(previewProcessedImage, params);
+    const response = await fetch(previewProcessedImage);
     if (!response.ok) return;
 
     const blob = await response.blob();
@@ -211,7 +208,7 @@ export const UploadImageDialog = ({ children }: Props) => {
             <DialogTitle>Upload Image</DialogTitle>
           </DialogHeader>
           <div className="grid gap-6">
-            <div className="relative flex flex-col items-center gap-4 p-6 border-2 border-dashed border-zinc-200 rounded-lg bg-zinc-50">
+            <div className="relative flex flex-col items-center gap-4 p-6 border-2 border-dashed border-zinc-200 rounded-lg bg-zinc-50 max-h-md">
               <div className="absolute -top-2 -right-2">
                 {base64String && previewProcessedImage === '' ? (
                   <Button
@@ -257,7 +254,10 @@ export const UploadImageDialog = ({ children }: Props) => {
             </div>
 
             {previewProcessedImage === '' ? (
-              <Button disabled={isUploading} onClick={onUpload}>
+              <Button
+                disabled={isUploading || credits === 0 || !file}
+                onClick={onUpload}
+              >
                 {isUploading ? 'Processing...' : `Remove Background (1 Credit)`}
               </Button>
             ) : (

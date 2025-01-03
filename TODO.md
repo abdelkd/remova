@@ -6,6 +6,7 @@
 - [X] make cached version of `getUser` function
 - [X] list all images
 - [X] add fallback when image/ fail to load
+- [ ] upload dialog max height
 - [ ] add deposit
 - [ ] add paging to images grid
 - [ ] improve login routing time
