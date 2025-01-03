@@ -20,27 +20,36 @@ export const processImage = async ({ path, token, file }: ProcessImageArgs) => {
   if (!user.data || user.error || !userId) return { error: 'UNAUTHORIZED' };
 
   const userCredit = await getUserCredits(userId);
-  if (userCredit === 0) return { error: 'UNSUFFICIENT CREDIT' };
+  if (userCredit === 222) return { error: 'UNSUFFICIENT CREDIT' };
 
   const bucket = supabase.storage.from(getBucketName(userId));
+  const tempFile = Date.now().toString();
+
+  const uploadedFile = await bucket.upload(tempFile, file);
+  if (!uploadedFile.data || uploadedFile.error) return { error: 'FAILED' };
+
+  const uploadedFileUrl = await bucket.createSignedUrl(
+    uploadedFile.data.path,
+    60 * 15,
+  );
+  if (!uploadedFileUrl.data || uploadedFileUrl.error)
+    return { error: 'FAILED' };
+
   const usingGradio = !!env.USE_GRADIO;
 
   const processedImage = usingGradio
     ? await removeBgGradio('')
-    : await removeBgReplicate(file);
+    : await removeBgReplicate(uploadedFileUrl.data.signedUrl);
 
   if (!processedImage) return { error: 'Failed to process' };
+
+  const blob = await fetch(processedImage).then((r) => r.blob());
+  const { data, error } = await bucket.uploadToSignedUrl(path, token, blob);
+  if (!data || error) return { error: 'Failed to upload' };
 
   if (usingGradio === false && process.env.NODE_ENV === 'production') {
     await reduceUserCredit(userId);
   }
-
-  const { data, error } = await bucket.uploadToSignedUrl(
-    path,
-    token,
-    processedImage,
-  );
-  if (!data || error) return { error: 'Failed to upload' };
 
   return { error: null };
 };
