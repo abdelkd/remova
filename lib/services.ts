@@ -26,10 +26,7 @@ export const removeBgGradio: RemoveBGFn = async (image_source) => {
   const resultData = result.data as GradioResultData[][];
   const resultImage = resultData[0][0];
 
-  const params: RequestInitExtended = {
-    duplex: 'half',
-  };
-  const imageBlob = await fetch(resultImage.url, params).then((r) => r.blob());
+  const imageBlob = await fetch(resultImage.url).then((r) => r.blob());
   return imageBlob;
 };
 
