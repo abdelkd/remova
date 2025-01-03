@@ -10,7 +10,7 @@ import LowCreditsInfo from '@/components/LowCreditsInfo';
 import { Button } from '@/components/ui/button';
 import { UploadImageDialog } from '@/components/UploadImageDialog';
 import UserImagesGrid from '@/components/UserImagesGrid';
-import { getCachedUser } from '@/lib/cache';
+import { getCachedUser, getCachedUserCredits } from '@/lib/cache';
 
 const MainApp = async () => {
   const {
@@ -20,6 +20,8 @@ const MainApp = async () => {
   if (!user || error) {
     redirect('/login');
   }
+
+  const credits = await getCachedUserCredits(user.id);
 
   return (
     <div className="min-h-screen bg-zinc-50">
@@ -45,7 +47,7 @@ const MainApp = async () => {
             Background Removal
           </h1>
 
-          <UploadImageDialog>
+          <UploadImageDialog credits={credits}>
             <Button className="gap-2">
               <Plus className="w-4 h-4" />
               New Image
