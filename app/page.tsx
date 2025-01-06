@@ -287,13 +287,20 @@ const FeatureSection = async () => {
 
 export default function Home() {
   return (
-    <main className="flex flex-col items-center w-full mb-7">
-      <HeroSection />
-      <div className="py-24" />
-      <FeatureSection />
-      <div className="py-24" />
-      <PricingSection />
-      <div className="py-4" />
-    </main>
+    <>
+      <main className="flex flex-col items-center w-full mb-7">
+        <HeroSection />
+        <div className="py-24" />
+        <FeatureSection />
+        <div className="py-24" />
+        <PricingSection />
+        <div className="py-4" />
+      </main>
+      <footer className="w-full py-2 static bottom-0 mx-auto flex justify-center items-center text-sm gap-3">
+        <Link href="/terms">Terms Of Service</Link>
+        <Link href="/privacy">Privacy Notice</Link>
+        <Link href="/refund">Refund Policy</Link>
+      </footer>
+    </>
   );
 }
