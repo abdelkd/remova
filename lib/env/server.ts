@@ -9,6 +9,7 @@ export const env = createEnv({
     TURSO_DATABASE_URL: z.string().url(),
     SUPABASE_URL: z.string().url(),
     SUPABASE_ANON_KEY: z.string().min(1),
+    SUPABASE_SERVICE_ROLE_KEY: z.string().min(1),
   },
   runtimeEnv: {
     GRADIO_API_URL: process.env.GRADIO_API_URL,
@@ -17,5 +18,6 @@ export const env = createEnv({
     TURSO_AUTH_TOKEN: process.env.TURSO_AUTH_TOKEN,
     SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
     SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
   },
 });

@@ -11,13 +11,11 @@ import {
   getCachedUserCredits,
   getCachedUserImages,
 } from '@/lib/cache';
-import { SupabaseFileObject, SupabaseStorageFileApi } from '@/types';
+import { SupabaseFileObject } from '@/types';
 import { createClient } from '@/lib/supabase/server';
 import { cookies } from 'next/headers';
-import { getBucketName } from '@/lib/utils';
 
 type ImageCardProps = {
-  bucket: SupabaseStorageFileApi;
   imageInfo: NonNullable<SupabaseFileObject>[number];
 };
 
@@ -25,16 +23,19 @@ export const ImageCardSkeleton = () => {
   return <Skeleton />;
 };
 
-export const ImageCard = async ({ bucket, imageInfo }: ImageCardProps) => {
-  const { data, error } = await bucket.createSignedUrl(imageInfo.name, 60 * 30);
-  await new Promise((res) => setTimeout(res, 4000));
+export const ImageCard = async ({ imageInfo }: ImageCardProps) => {
+  const supabase = createClient(await cookies());
+  const userId = (await getCachedUser()).data.user!.id;
+  const imagePath = `user_${userId!}/${imageInfo.name}`;
+  const { data } = await supabase.storage
+    .from('images')
+    .createSignedUrl(imagePath, 60 * 30);
 
-  // TODO: Show fallback
-  if (!data || error) return null;
+  await new Promise((res) => setTimeout(res, 4000));
 
   return (
     <Image
-      src={data.signedUrl}
+      src={data!.signedUrl}
       alt={'An image'}
       height={512}
       width={512}
@@ -52,15 +53,7 @@ const UserImagesGrid = async ({}) => {
   if (!user || error) return redirect('/login');
 
   const credits = await getCachedUserCredits(user.id);
-  const { data: images, error: imagesError } = await getCachedUserImages(
-    user.id,
-  );
-  if (imagesError) {
-    throw new Error('Could not get images');
-  }
-
-  const supabase = createClient(await cookies());
-  const bucket = supabase.storage.from(getBucketName(user.id));
+  const { data: images } = await getCachedUserImages(user.id);
 
   return (
     <>
@@ -92,7 +85,7 @@ const UserImagesGrid = async ({}) => {
           {images &&
             images.map((image) => (
               <Suspense key={image.id} fallback={<ImageCardSkeleton />}>
-                <ImageCard imageInfo={image} bucket={bucket} />
+                <ImageCard imageInfo={image} />
               </Suspense>
             ))}
         </div>

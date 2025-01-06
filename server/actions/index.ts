@@ -1,60 +1,89 @@
 'use server';
-import { createClient } from '@/lib/supabase/server';
+import { createClient, createServiceRoleClient } from '@/lib/supabase/server';
 import { cookies } from 'next/headers';
-import { reduceUserCredit, getUserCredits } from '@/server/db';
-import { env } from '@/lib/env/server';
-import { removeBgGradio, removeBgReplicate } from '@/lib/services';
-import { getBucketName } from '@/lib/utils';
+import { getUserCredits } from '@/server/db';
+import { removeBgReplicate } from '@/lib/services';
 import { revalidatePath } from 'next/cache';
 
 type ProcessImageArgs = {
-  path: string;
-  token: string;
   file: File;
 };
 
-export const processImage = async ({ path, token, file }: ProcessImageArgs) => {
+export const processImage = async ({ file }: ProcessImageArgs) => {
   const supabase = createClient(await cookies());
+  const supabaseServiceRole = createServiceRoleClient();
 
-  const user = await supabase.auth.getUser();
-  const userId = user.data.user?.id;
-  if (!user.data || user.error || !userId) return { error: 'UNAUTHORIZED' };
+  const imagesBucket = supabase.storage.from('images');
+  const temporaryImagesBucket = supabaseServiceRole.storage.from('images-temp');
 
-  const userCredit = await getUserCredits(userId);
-  if (userCredit === 222) return { error: 'UNSUFFICIENT CREDIT' };
+  try {
+    const user = await supabase.auth.getUser();
+    const userId = user.data.user?.id;
+    if (!user.data || user.error || !userId) {
+      throw new Error('Unauthorized Request');
+    }
 
-  const bucket = supabase.storage.from(getBucketName(userId));
-  const tempFile = Date.now().toString();
+    const userCredit = await getUserCredits(userId);
+    if (userCredit === 0) {
+      throw new Error('Unsufficient Credit');
+    }
 
-  const uploadedFile = await bucket.upload(tempFile, file);
-  if (!uploadedFile.data || uploadedFile.error) return { error: 'FAILED' };
+    const tempFilePath = userId + Date.now();
+    const uploadTempFileResult = await temporaryImagesBucket.upload(
+      tempFilePath,
+      file,
+    );
 
-  const uploadedFileUrl = await bucket.createSignedUrl(
-    uploadedFile.data.path,
-    60 * 15,
-  );
-  if (!uploadedFileUrl.data || uploadedFileUrl.error)
-    return { error: 'FAILED' };
+    if (!uploadTempFileResult.data || uploadTempFileResult.error) {
+      console.error(uploadTempFileResult.error);
+      throw new Error('Failed to upload to temporary bucjet');
+    }
 
-  const usingGradio = !!env.USE_GRADIO;
+    const signedUrlTempFileResult = await temporaryImagesBucket.createSignedUrl(
+      tempFilePath,
+      60 * 5,
+    );
+    if (!signedUrlTempFileResult.data || signedUrlTempFileResult.error) {
+      console.error(signedUrlTempFileResult.error);
+      throw new Error('Failed to create signed url');
+    }
 
-  const processedImage = usingGradio
-    ? await removeBgGradio('')
-    : await removeBgReplicate(uploadedFileUrl.data.signedUrl);
+    const imageProcess = await removeBgReplicate(
+      signedUrlTempFileResult.data.signedUrl,
+    );
+    if (!imageProcess.data || imageProcess.error) {
+      console.error(imageProcess.error);
+      throw new Error('Process Service Responded with Null');
+    }
 
-  if (!processedImage) return { error: 'Failed to process' };
+    const imageBlob = await fetch(imageProcess.data.url).then((r) => r.blob());
+    const imagePath = `user_${userId}/${Date.now()}.png`;
+    const uploadResult = await imagesBucket.upload(imagePath, imageBlob);
+    if (!uploadResult.data || uploadResult.error) {
+      console.error(uploadResult.error);
+      throw new Error("Couldn't Upload Result File");
+    }
 
-  const blob = await fetch(processedImage).then((r) => r.blob());
-  const { data, error } = await bucket.uploadToSignedUrl(path, token, blob);
-  if (!data || error) return { error: 'Failed to upload' };
+    const signedUrlResult = await imagesBucket.createSignedUrl(
+      imagePath,
+      60 * 5,
+    );
+    if (!signedUrlResult.data || signedUrlResult.error) {
+      console.error(signedUrlResult.error);
+      throw new Error("Couldn't Get Signed URL");
+    }
 
-  await bucket.remove([uploadedFile.data.path]);
+    revalidatePath('/app');
 
-  if (usingGradio === false && process.env.NODE_ENV === 'production') {
-    await reduceUserCredit(userId);
+    return {
+      data: { url: signedUrlResult.data.signedUrl },
+      error: null,
+    };
+  } catch (error) {
+    console.error(error);
+    return {
+      data: { url: null },
+      error: "Sorry We Couldn't Process your Request",
+    };
   }
-
-  revalidatePath('/app', 'page');
-
-  return { error: null };
 };

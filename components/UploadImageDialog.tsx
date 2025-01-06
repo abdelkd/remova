@@ -14,7 +14,6 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
 import { useUploadFile } from '@/hooks/use-upload-file';
 import type { OnInteractionOutside } from '@/components/ui/types';
-import { createClient } from '@/lib/supabase/client';
 import { processImage } from '@/server/actions';
 import { useToast } from '@/hooks/use-toast';
 
@@ -79,7 +78,7 @@ const PreviewImage = ({
 export const UploadImageDialog = ({ children, credits }: Props) => {
   const { toast } = useToast();
 
-  const [supabase] = useState(() => createClient());
+  // const [supabase] = useState(() => createClient());
   const [dontSave, setDontSave] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [previewProcessedImage, setPreviewProcessedImage] = useState('');
@@ -96,69 +95,21 @@ export const UploadImageDialog = ({ children, credits }: Props) => {
 
   const onUpload = async () => {
     if (!file?.name) return;
-    console.time('serverResponseTime');
     setIsUploading(true);
 
     try {
-      const {
-        data: { session },
-        error,
-      } = await supabase.auth.getSession();
-      if (!session || !session?.user || error) {
+      const processResult = await processImage({ file });
+
+      if (!processResult.data?.url || processResult.error) {
         toast({
-          title: 'Oh! Something went wrong',
-          description: 'There was problem with your session',
-          variant: 'destructive',
+          title: 'Uh! oh, Something Went Wrong',
+          content: "We Couldn't Process your request",
         });
-        throw new Error('Failed to get session');
+        throw new Error(processResult.error);
       }
 
-      const bucketName = `user_${session?.user.id}`;
-      const bucket = supabase.storage.from(bucketName);
-
-      const processedImage = Date.now() + file.name + '.png';
-      const { data: signedUploadData, error: signedUploadError } =
-        await bucket.createSignedUploadUrl(processedImage);
-      if (signedUploadError) {
-        toast({
-          description: 'Oh! Something went wrong',
-          variant: 'destructive',
-        });
-        throw new Error('Failed to create upload Url');
-      }
-
-      // send it to action
-      console.time('processImage');
-      const { error: processError } = await processImage({
-        file,
-        path: signedUploadData.path,
-        token: signedUploadData.token,
-      });
-      console.timeEnd('processImage');
-
-      if (processError !== null) {
-        toast({
-          title: 'Oh! Something went wrong',
-          description: 'There was problem with our service.',
-          variant: 'destructive',
-        });
-        throw new Error(processError);
-      }
-
-      const processedImageUrl = await bucket.createSignedUrl(
-        processedImage,
-        60 * 10,
-      );
-      if (processedImageUrl.error) {
-        toast({
-          title: 'Oh! Something went wrong',
-          description: 'There was problem with our service',
-          variant: 'destructive',
-        });
-        throw new Error('Failed to get processed image');
-      }
-
-      setPreviewProcessedImage(processedImageUrl.data.signedUrl);
+      setPreviewProcessedImage(processResult.data.url!);
+      console.log(processResult);
     } catch (err) {
       console.error(err);
       toast({
