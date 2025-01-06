@@ -2,7 +2,7 @@ import PolicyLayout from '@/components/PrivacyLayout';
 import { Separator } from '@/components/ui/separator';
 import { RefreshCcw } from 'lucide-react';
 
-export const RefundPolicy = () => (
+const RefundPolicy = () => (
   <PolicyLayout
     icon={RefreshCcw}
     title="Refund Policy"
