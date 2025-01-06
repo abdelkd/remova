@@ -1,6 +1,20 @@
 import { createServerClient } from '@supabase/ssr';
+import { createClient as createClientJs } from '@supabase/supabase-js';
+
 import { cookies } from 'next/headers';
 import { env } from '@/lib/env/server';
+
+/**
+ * Create a Supabase client with the service role key.
+ * This client bypasses RLS and should only be used on the server.
+ */
+export const createServiceRoleClient = () => {
+  return createClientJs(env.SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY, {
+    auth: {
+      persistSession: false, // Disable session persistence for service role
+    },
+  });
+};
 
 export const getUser = async () => {
   const supabase = createClient(await cookies());

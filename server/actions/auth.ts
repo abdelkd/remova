@@ -5,7 +5,6 @@ import type { AuthForm } from '@/types';
 import { createClient } from '@/lib/supabase/server';
 import { cookies } from 'next/headers';
 import { registerNewUser } from '@/server/db';
-import { getBucketName } from '@/lib/utils';
 
 export const loginUser = async ({ email, password }: AuthForm) => {
   const supabase = createClient(await cookies());
@@ -32,16 +31,7 @@ export const signUpUser = async ({ email, password }: AuthForm) => {
       return { data: { user: null }, error: true };
     }
 
-    const bucketName = getBucketName(data.user.id);
     await registerNewUser({ id: data.user.id, email, password });
-
-    const bucketResult = await supabase.storage.createBucket(bucketName);
-
-    if (bucketResult.error) {
-      console.error(bucketResult.error);
-      await supabase.auth.admin.deleteUser(data.user.id);
-      return { data: { user: null }, error: true };
-    }
 
     return { data, error };
   } catch (err) {

@@ -1,7 +1,7 @@
 import { Client } from '@gradio/client';
 
 import { env } from '@/lib/env/server';
-// import { RequestInitExtended } from '@/types';
+import { urlSchema } from '@/schemas';
 
 type FileBody = File | ArrayBuffer | Blob | ReadableStream<Uint8Array>;
 
@@ -30,13 +30,20 @@ export const removeBgGradio: RemoveBGFn = async (image_source) => {
 };
 
 // TODO: use streaming
-export const removeBgReplicate = async (image: string) => {
+export const removeBgReplicate = async (imageSource: string) => {
   const url = 'https://api.replicate.com/v1/predictions';
+
+  if (urlSchema.safeParse(imageSource).success === false) {
+    return {
+      data: null,
+      error: 'A valid url must be passed',
+    };
+  }
 
   const payload = {
     version: 'f74986db0355b58403ed20963af156525e2891ea3c2d499bfbfb2a28cd87c5d7',
     input: {
-      image,
+      image: imageSource,
     },
   };
 
@@ -56,9 +63,17 @@ export const removeBgReplicate = async (image: string) => {
     }
 
     const data = await response.json();
-    console.log('Prediction created:', data);
-    return data['output'];
+    // console.log('Prediction created:', data);
+
+    return {
+      data: { url: data['output'] },
+      error: null,
+    };
   } catch (error) {
     console.error('Error creating prediction:', error);
+    return {
+      data: null,
+      error,
+    };
   }
 };

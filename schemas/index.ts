@@ -6,3 +6,5 @@ export const authFormSchema = z.object({
     message: 'Password must be at least 8 characters.',
   }),
 });
+
+export const urlSchema = z.string().url();
