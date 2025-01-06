@@ -46,3 +46,5 @@ export const RefundPolicy = () => (
     </section>
   </PolicyLayout>
 );
+
+export default RefundPolicy;
