@@ -105,11 +105,10 @@ export const UploadImageDialog = ({ children, credits }: Props) => {
           title: 'Uh! oh, Something Went Wrong',
           content: "We Couldn't Process your request",
         });
-        throw new Error(processResult.error);
+        throw new Error(processResult.error!);
       }
 
       setPreviewProcessedImage(processResult.data.url!);
-      console.log(processResult);
     } catch (err) {
       console.error(err);
       toast({
@@ -118,7 +117,6 @@ export const UploadImageDialog = ({ children, credits }: Props) => {
       });
     } finally {
       setIsUploading(false);
-      console.timeEnd('serverResponseTime');
     }
   };
 
