@@ -2,7 +2,7 @@ import PolicyLayout from '@/components/PrivacyLayout';
 import { Separator } from '@/components/ui/separator';
 import { Scale } from 'lucide-react';
 
-export const TermsOfService = () => (
+const TermsOfService = () => (
   <PolicyLayout
     icon={Scale}
     title="Terms of Service"
