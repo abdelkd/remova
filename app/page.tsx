@@ -147,8 +147,8 @@ const PricingSection = () => {
         <CardContent className="space-y-6">
           <div className="text-center">
             <div className="flex items-center justify-center space-x-2">
-              <span className="text-3xl font-bold text-gray-900">1000</span>
-              <span className="text-gray-600">images/month</span>
+              <span className="text-3xl font-bold text-gray-900">120</span>
+              <span className="text-gray-600">/$1.99</span>
             </div>
           </div>
 
